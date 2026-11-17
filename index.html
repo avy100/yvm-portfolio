@@ -1,0 +1,1667 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>YVM</title>
+<meta name="description" content="Fashion design student reworking preloved fabrics into custom pieces and promoting different ways to repair clothing you already have.">
+<meta property="og:title" content="YVM">
+<meta property="og:site_name" content="YVM">
+<meta property="og:description" content="Fashion design student reworking preloved fabrics into custom pieces and promoting different ways to repair clothing you already have.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="YVM">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- fonts load without blocking the first paint; the script at the end switches them on if onload is blocked -->
+<link rel="stylesheet" id="webfonts" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;1,400&family=Hanken+Grotesk:wght@400;500;600&family=Special+Elite&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;1,400&family=Hanken+Grotesk:wght@400;500;600&family=Special+Elite&display=swap"></noscript>
+<style>
+/* Layout: a sea-foam collage. White foam ground, typewriter poetry, ink splatter, cut-out photos
+   outlined in black ink, a taped "inspirations" label and a moving wave across the hero.
+   Pearl layer: pearl details, photos get a faded, scratched, grainy print finish.
+   Jellyfish layer: translucent blush jellyfish drift up behind the page.
+   Croquis: brush-ink fashion figures (line-up under the hero, a walking trio at the end) sketch in on scroll.
+   Photo: the fish-scale photo sits full-bleed behind Contact, faded out on every edge. A mother-of-pearl photo dissolves in behind About.
+   Custom: a denim section in indigo twill with gold dashed topstitching for custom pieces and repairs. Light only. */
+:root {
+  --foam: #f5f8f8;       /* page ground, cold white */
+  --sheet: #ffffff;
+  --ink: #0e1315;
+  --slate: #56656c;      /* muted text */
+  --spray: #dde6e9;
+  --sea: #8ea3ad;        /* grey Atlantic */
+  --deep: #34505d;
+  --glacier: #6f9cc0;    /* ice-blue sequin accent */
+  --indigo: #2b4a76;      /* raw denim */
+  --indigo-light: #5d80ae; /* worn denim */
+  --indigo-pale: #a9bfdb;  /* faded, bleached denim */
+  --thread: #ffffff;      /* white topstitching thread */
+  --wave-light: #cfe3f4;  /* hero sea: far water */
+  --wave-mid: #78a9d8;    /* hero sea: body of the waves */
+  --wave-deep: #3d6ca3;   /* hero sea: deepest troughs */
+  --teal: #6e7b7a;       /* soft grey with a hint of teal, for the intro text */
+  --pearl: #f1eef0;       /* pearl body, faint rose */
+  --nacre: #c9c3d3;       /* lavender-grey pearl shadow */
+  --blush: #f9e9ef;       /* jellyfish bell */
+  --jelly: #ecc8d6;       /* jellyfish rim and tentacles */
+  --outline: #1f3d6b;       /* dark blue for every hand-drawn outline */
+  --thread-pink: #e39ab5;  /* the needle cursor's thread */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  --display: "Cormorant", "Cormorant Garamond", Didot, "Bodoni 72", Georgia, serif;
+  --sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --type: "Special Elite", "American Typewriter", "Courier New", monospace;
+
+  --s1: .5rem; --s2: 1rem; --s3: 1.5rem; --s4: 2.5rem; --s5: 4rem; --s6: 7rem;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 4.5rem); }   /* menu links land below the pinned header, not under it */
+body {
+  background: var(--foam);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  padding-inline: clamp(16px, 4vw, 56px);
+  overflow-x: hidden;
+}
+body::before {                  /* blush glow, pinned to the screen on its own layer (background-attachment: fixed repaints the page on every scroll) */
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(55vw 45vw at 88% 8%, color-mix(in srgb, var(--blush) 70%, transparent), transparent 70%),
+    radial-gradient(50vw 50vw at 6% 55%, color-mix(in srgb, var(--blush) 45%, transparent), transparent 70%);
+  will-change: transform;
+}
+body::after {                   /* film grain over the whole page */
+  content: ""; position: fixed; inset: 0; z-index: 60; pointer-events: none;
+  background: var(--grain); opacity: .06;   /* plain opacity: a blend mode here would recomposite the whole page on every scroll */
+}
+/* custom cursors: a sewing needle trailing a loose pink thread for the page, sewing scissors over anything clickable */
+html { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cg transform='rotate(-45 14 14)'%3E%3Cpath d='M14 1 L15.6 20 Q14 25 12.4 20 Z' fill='%23e9edf3' stroke='%231f3d6b' stroke-width='1.3' stroke-linejoin='round'/%3E%3Cellipse cx='14' cy='18' rx='.8' ry='2.2' fill='%231f3d6b'/%3E%3C/g%3E%3C/svg%3E") 4 4, auto; }
+a, button, [role="button"], label, summary { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cg transform='rotate(-40 14 15)' stroke='%231f3d6b' stroke-width='1.2' stroke-linejoin='round'%3E%3Cpath d='M14.6 16 L10 1 L13 15.5 Z' fill='%23e9edf3'/%3E%3Cpath d='M13.4 16 L18 1 L15 15.5 Z' fill='%23e9edf3'/%3E%3Cpath d='M13.6 15.5 L10.4 19.5 M14.4 15.5 L17.6 19.5' fill='none' stroke-width='1.6'/%3E%3Ccircle cx='9.2' cy='22.2' r='3.2' fill='none' stroke='%23e39ab5' stroke-width='1.8'/%3E%3Ccircle cx='18.8' cy='22.2' r='3.2' fill='none' stroke='%23e39ab5' stroke-width='1.8'/%3E%3Ccircle cx='14' cy='15.6' r='1.1' fill='%231f3d6b' stroke='none'/%3E%3C/g%3E%3C/svg%3E") 5 4, pointer; }
+a:active, button:active, [role="button"]:active, label:active, summary:active { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cg transform='rotate(-40 14 15)' stroke='%231f3d6b' stroke-width='1.2' stroke-linejoin='round'%3E%3Cpath d='M14.6 16 L13.6 1 L13 15.5 Z' fill='%23e9edf3'/%3E%3Cpath d='M13.4 16 L14.4 1 L15 15.5 Z' fill='%23e9edf3'/%3E%3Cpath d='M13.6 15.5 L10.4 19.5 M14.4 15.5 L17.6 19.5' fill='none' stroke-width='1.6'/%3E%3Ccircle cx='9.2' cy='22.2' r='3.2' fill='none' stroke='%23e39ab5' stroke-width='1.8'/%3E%3Ccircle cx='18.8' cy='22.2' r='3.2' fill='none' stroke='%23e39ab5' stroke-width='1.8'/%3E%3Ccircle cx='14' cy='15.6' r='1.1' fill='%231f3d6b' stroke='none'/%3E%3C/g%3E%3C/svg%3E") 5 4, pointer; }   /* the scissors snap shut while you click */
+a { color: inherit; }
+:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; line-height: .9; text-wrap: balance; }
+p { margin: 0; }
+.wrap { max-width: 1240px; margin-inline: auto; position: relative; z-index: 1; }
+.thread { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 80; pointer-events: none; }   /* the needle cursor's trailing thread */
+.jellies { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;  transition: opacity .9s ease; }
+.jellies.away { opacity: 0; }   /* hidden while the contact section is on screen */
+.label { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--slate); font-weight: 500; }
+.cv .label { text-transform: none; letter-spacing: .02em; font-size: .9rem; }   /* section headings in the CV: normal case, not all caps */
+.tw { font-family: var(--type); font-size: 1rem; line-height: 1.35; color: var(--ink); text-shadow: 0 0 .6px var(--ink); }
+.tw u { text-decoration: none; border-bottom: 1.5px solid var(--ink); }
+.tw.spaced { letter-spacing: .12em; }
+
+/* ---------- textures ---------- */
+.splat {                         /* black ink splatter */
+  position: absolute; pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse at 45% 55%, var(--ink) 0 38%, transparent 39%);
+  filter: url(#splatter);
+}
+.splat::after {                  /* stippled spray around the blot */
+  content: ""; position: absolute; inset: -25%;
+  background:
+    radial-gradient(circle, var(--ink) 1.3px, transparent 1.8px) 0 0 / 9px 11px,
+    radial-gradient(circle, var(--ink) .9px, transparent 1.4px) 4px 5px / 13px 7px;
+  -webkit-mask: radial-gradient(ellipse at 45% 55%, #000 22%, transparent 62%);
+          mask: radial-gradient(ellipse at 45% 55%, #000 22%, transparent 62%);
+  filter: url(#rough);
+}
+
+.sea {                           /* photo placeholder: grey water + foam */
+  position: relative; overflow: hidden; max-width: 100%;
+  background: linear-gradient(180deg, var(--sheet) 0%, var(--spray) 38%, var(--sea) 78%, var(--deep) 100%);
+}
+.sea::before {                   /* foam bubbles */
+  content: ""; position: absolute; inset: -20px;
+  background:
+    radial-gradient(circle, var(--sheet) 0 var(--r1, 5px), transparent calc(var(--r1, 5px) + 1px)) 0 0 / var(--g1, 23px) var(--g2, 17px),
+    radial-gradient(circle, color-mix(in srgb, var(--sheet) 80%, transparent) 0 var(--r2, 9px), transparent calc(var(--r2, 9px) + 1.5px)) 7px 9px / var(--g3, 41px) var(--g4, 31px),
+    radial-gradient(circle, var(--sheet) 0 2px, transparent 3px) 3px 2px / 11px 13px;
+  -webkit-mask: linear-gradient(var(--dir, 175deg), transparent 18%, #000 42%, #000 58%, transparent 80%);
+          mask: linear-gradient(var(--dir, 175deg), transparent 18%, #000 42%, #000 58%, transparent 80%);
+  filter: blur(.6px);
+}
+.sea.live::before { animation: wash 9s ease-in-out infinite alternate; will-change: transform; }   /* foam only drifts while it's on screen */
+.sea::after {                    /* spray veil, grain and print scratches */
+  content: ""; position: absolute; inset: 0;
+  background:
+    var(--grain),
+    repeating-linear-gradient(94deg, transparent 0 43px, color-mix(in srgb, var(--sheet) 55%, transparent) 43px 44px, transparent 44px 131px),
+    repeating-linear-gradient(-87deg, transparent 0 71px, color-mix(in srgb, var(--ink) 14%, transparent) 71px 72px, transparent 72px 167px),
+    radial-gradient(ellipse at 50% 45%, transparent 45%, color-mix(in srgb, var(--slate) 30%, transparent) 100%),
+    linear-gradient(180deg, color-mix(in srgb, var(--sheet) 70%, transparent) 0%, transparent 40%, color-mix(in srgb, var(--deep) 18%, transparent) 100%);
+  background-size: 220px 220px, auto, auto, auto, auto;
+  opacity: .9;
+}
+@keyframes wash { from { transform: translate(-3%, 1%); } to { transform: translate(3%, -2%); } }
+.sea.t2 { --r1: 3px; --g1: 15px; --g2: 19px; --r2: 12px; --g3: 53px; --g4: 37px; --dir: 160deg; }
+.sea.t3 { --r1: 6px; --g1: 29px; --g2: 21px; --r2: 7px; --g3: 33px; --g4: 45px; --dir: 195deg; }
+.sea.t4 { --r1: 4px; --g1: 19px; --g2: 27px; --r2: 14px; --g3: 61px; --g4: 29px; --dir: 140deg; }
+.sea.deep { background: linear-gradient(180deg, var(--spray) 0%, var(--sea) 45%, var(--deep) 85%, var(--ink) 100%); }
+.sea.ice  { background: linear-gradient(180deg, var(--sheet) 0%, color-mix(in srgb, var(--glacier) 30%, var(--sheet)) 55%, var(--glacier) 100%); }
+.sea.jelly { background: linear-gradient(180deg, var(--sheet) 0%, var(--blush) 45%, var(--jelly) 80%, var(--slate) 100%); }
+
+.cut { position: relative; }     /* black cut-out outline, like scissors on paper */
+.cut::after {
+  content: ""; position: absolute; inset: -5px; z-index: 3; pointer-events: none;
+  border: 2px solid var(--outline); filter: url(#rough);
+}
+.cut.live:not(.wave)::after { animation: boil .75s steps(1) infinite; }   /* .live is added only while the element is on screen */   /* drawn outlines wobble like a hand-drawn line redrawn every frame; the wave picture's stays still */
+.sea.cut::after { inset: 2px; }   /* photo placeholders clip their overflow, so their outline sits just inside the edge to stay visible */
+@keyframes boil { 0% { filter: url(#boil-a); } 33% { filter: url(#boil-b); } 66% { filter: url(#boil-c); } }
+.slot { position: absolute; left: .7rem; bottom: .6rem; z-index: 2; font-family: var(--type); font-size: .82rem; line-height: 1; color: var(--ink); background: color-mix(in srgb, var(--sheet) 80%, transparent); display: inline-flex; align-items: center; padding: .32rem .5rem .26rem; }   /* the typewriter face sits high, so a touch more padding on top keeps it centred */
+
+.print {                         /* faded photo print; the hand-drawn outline comes from .cut on its wrapper */
+  filter: saturate(.75) contrast(.95);
+}
+.print.sea { background: linear-gradient(180deg, var(--pearl) 0%, var(--nacre) 40%, var(--sea) 75%, var(--slate) 100%); }
+
+.tape {
+  display: inline-block; font-family: var(--type); font-size: 1.5rem; letter-spacing: .08em;
+  padding: .45rem 1.1rem .35rem; background: color-mix(in srgb, var(--wave-mid) 45%, var(--sheet));   /* pastel version of the wave blue */
+  color: var(--ink); transform: rotate(-4deg);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 18%, transparent), 0 8px 18px -10px color-mix(in srgb, var(--ink) 45%, transparent);
+  clip-path: polygon(1% 4%, 99% 0, 100% 92%, 97% 100%, 0 96%);
+}
+
+
+/* ---------- nav ---------- */
+.topbar {                       /* sits directly in the page, so it stays pinned to the top the whole way down */
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  margin-inline: calc(-1 * clamp(16px, 4vw, 56px)); padding-inline: clamp(16px, 4vw, 56px);   /* background runs edge to edge */
+  background: color-mix(in srgb, var(--foam) 96%, transparent);   /* no backdrop blur: it would re-blur the moving canvases under it every frame */
+}
+.nav {
+  /* no max-width: the logo and links run out to the screen edges, inside the page gutter */
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2);
+  padding-block: var(--s2);
+}
+.logo { font-family: var(--type); font-size: .9rem; text-decoration: none; letter-spacing: .04em; color: var(--slate); }   /* same grey-blue as the "fashion design student" line */
+.nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: var(--s3); margin: 0; padding: 0; }
+.nav a.lk { text-decoration: none; font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; }
+.nav a.lk:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- hero ---------- */
+.board {
+  position: relative; display: grid; gap: var(--s3);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  padding-block: var(--s3) var(--s5);
+}
+.board > * { position: relative; z-index: 1; }
+.wave > .location { position: absolute; right: 0; top: calc(100% + 1rem); margin: 0; font-size: 1.12rem; text-align: right; }   /* sits just under the wave picture's bottom-right corner */
+.wave { grid-column: 5 / 13; grid-row: 1 / 3; min-height: 440px; background: var(--spray); }
+.wave canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero-title { grid-column: 1 / 8; grid-row: 1 / 3; align-self: center;   /* fills the open space left of the wave picture */ display: flex; flex-direction: column; gap: var(--s2); z-index: 4; }
+.hero-title h1 { font-size: clamp(4rem, 11vw, 10rem); letter-spacing: -.03em; font-weight: 500; color: var(--outline); }   /* same dark blue as the drawn outlines */
+.hero-title h1 em { font-style: italic; font-weight: 400; }
+.hero-title .lede { max-width: 42ch; font-family: var(--type); font-size: 1.05rem; line-height: 1.45; text-shadow: 0 0 .6px var(--teal); color: var(--teal); background: color-mix(in srgb, var(--foam) 80%, transparent); }
+@media (min-width: 961px) {         /* keep the intro inside the 4 columns left of the wave (the title block spans 7) */
+  .hero-title .lede, .hero-title > .label { max-width: calc((100% - 6 * var(--s3)) * 4 / 7 + 3 * var(--s3) - var(--s2)); }
+}
+.ctas { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s1); }
+.ctas a { text-decoration: none; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; border-bottom: 1px solid var(--ink); padding-bottom: .2rem; }
+.ctas a:hover { color: var(--deep); border-color: var(--deep); }
+.lineup-strip .tape { margin: 0 0 var(--s1) .3rem; }   /* labels the sketches directly below it */
+
+/* ---------- sections ---------- */
+section.block { padding-block: var(--s6) 0; }
+#about { padding-block-start: var(--s3); }   /* follows straight on from the sketch line-up */
+section.has-photo { position: relative; isolation: isolate; }
+.pearl-photo {                   /* mother-of-pearl photo, full-bleed behind About, dissolving softly into the page */
+  position: absolute; z-index: -1; pointer-events: none;
+  top: -25%; bottom: -25%; left: calc(50% - 50vw); width: 100vw;
+  background: center / cover no-repeat;   /* the photo is set by .loaded, added as the section nears the screen */
+  opacity: .45;
+  -webkit-mask: radial-gradient(ellipse 60% 55% at 50% 50%, #000 0%, rgba(0,0,0,.6) 35%, rgba(0,0,0,.2) 65%, transparent 100%);
+          mask: radial-gradient(ellipse 60% 55% at 50% 50%, #000 0%, rgba(0,0,0,.6) 35%, rgba(0,0,0,.2) 65%, transparent 100%);
+}
+.pearl-photo.loaded { background-image: url("mother-of-pearl.webp"); }
+.contact > .scale-photo.loaded { background-image: url("fish-scales.webp"); }
+/* sections without content yet: one row with the title and "coming soon" */
+section.block.soon { padding-block-start: var(--s5); }
+section.block.soon + section.block.soon { padding-block-start: var(--s3); }
+.soon-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s1) var(--s3); border-bottom: 1px solid var(--ink); padding-bottom: var(--s2); }
+.soon-row h2 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 500; }
+.soon-row h2 em { font-style: italic; font-weight: 400; }
+.soon-row .tw { color: var(--slate); letter-spacing: .08em; }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s2) var(--s4); align-items: end; margin-bottom: var(--s4); border-bottom: 1px solid var(--ink); padding-bottom: var(--s2); }
+.sec-head h2 { font-size: clamp(2.8rem, 7.5vw, 6rem); font-weight: 500; }
+.sec-head h2 em { font-style: italic; font-weight: 400; }
+.sec-head p { color: var(--slate); max-width: 44ch; justify-self: end; }
+
+.lineup-strip { padding-block: var(--s2) 0; }
+.lineup-strip canvas { display: block; width: 100%; height: clamp(190px, 22vw, 290px); }
+.footer-walk { display: flex; justify-content: flex-end; position: relative; z-index: 1; margin-top: calc(-1 * (var(--s5) + var(--s4)) - var(--s4)); }   /* rises so the figures overlap the bottom of the contact box */
+.footer-walk canvas { width: min(100%, 210px); height: 150px; }
+
+/* ---------- custom & repair (denim) ---------- */
+.denim {                         /* indigo twill placeholder */
+  position: relative; overflow: hidden; max-width: 100%;
+  background:
+    repeating-linear-gradient(60deg, color-mix(in srgb, var(--sheet) 10%, transparent) 0 1.5px, transparent 1.5px 4px),
+    repeating-linear-gradient(-30deg, color-mix(in srgb, var(--ink) 12%, transparent) 0 1px, transparent 1px 3px),
+    linear-gradient(160deg, var(--indigo-light), var(--indigo) 70%, color-mix(in srgb, var(--indigo) 70%, var(--ink)));
+}
+.denim.faded { background:
+    repeating-linear-gradient(60deg, color-mix(in srgb, var(--sheet) 16%, transparent) 0 1.5px, transparent 1.5px 4px),
+    repeating-linear-gradient(-30deg, color-mix(in srgb, var(--ink) 8%, transparent) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at 50% 40%, var(--indigo-pale), var(--indigo-light) 75%); }
+.denim::after {                  /* topstitching in gold thread */
+  content: ""; position: absolute; inset: 8px; pointer-events: none;
+  border: 1.5px dashed var(--thread); opacity: .9;
+}
+.wip { filter: blur(7px); opacity: .7; user-select: none; pointer-events: none; }   /* services and steps are still being built */
+.wip .cut::after { animation: none; }   /* no wobbling outlines under the blur: re-blurring them every frame would be slow */
+#custom .before-after { margin: var(--s5) 0 var(--s5); max-width: 960px; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }   /* a compact row of three pairs */
+@media (max-width: 600px) { #custom .before-after { grid-template-columns: minmax(0, 1fr); max-width: 380px; } }   /* the before-and-after work now leads the section */
+.notice {                       /* commission notice, right under the Custom & repair heading */
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); margin-bottom: var(--s4);
+}
+.notice-note { margin: 0; font-family: var(--type); font-size: 1.05rem; letter-spacing: .04em; color: var(--ink); background: var(--sheet); padding: .55rem 1.1rem .45rem; border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent); box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--deep) 60%, transparent); }
+.notice .tape { transform: rotate(-4deg); font-size: clamp(1.4rem, 3vw, 2.2rem); white-space: nowrap; }
+.services { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4); }
+.service { display: flex; flex-direction: column; gap: var(--s2); padding: var(--s3); background: color-mix(in srgb, var(--sheet) 70%, transparent); min-width: 0; }
+.service .tag { align-self: flex-start; font-family: var(--type); font-size: .85rem; letter-spacing: .06em; color: var(--sheet); background: var(--indigo); padding: .25rem .7rem .2rem; }
+.service h3 { font-size: clamp(2rem, 3.6vw, 2.8rem); font-style: italic; }
+.service ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.service li { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: var(--s2); padding-block: .7rem; border-top: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); }
+.service li b { font-weight: 600; }
+.service li span { color: var(--slate); font-size: .94rem; }
+.before-after { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); margin-top: var(--s5); }
+.ba { margin: 0; display: flex; flex-direction: column; gap: .6rem; }
+.ba .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.ba .pair > div { aspect-ratio: 3 / 4; }
+.ba-photo { position: relative; overflow: hidden; }
+.ba-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 15% 50%; display: block; }   /* framed on the left pocket's lace */
+.ba figcaption { font-size: .88rem; line-height: 1.4; display: flex; flex-direction: column; }
+.ba figcaption .tw { font-size: .85rem; }
+.ba figcaption span:last-child { color: var(--slate); }
+.how { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s5); margin-top: var(--s5); align-items: start; }
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s3) var(--s4); }
+.steps li { counter-increment: step; display: flex; flex-direction: column; gap: .3rem; padding-top: .7rem; border-top: 1.5px dashed var(--indigo-pale); }
+.steps li::before { content: "Step " counter(step); font-family: var(--type); font-size: .85rem; color: var(--indigo); }
+.steps b { font-family: var(--display); font-size: 1.5rem; font-weight: 500; line-height: 1.1; }
+.steps span { color: var(--slate); font-size: .94rem; }
+
+/* ---------- photo album ---------- */
+/* a carousel: one row of prints that scrolls sideways (swipe, trackpad, arrow keys or the arrow buttons), snapping each print to the centre */
+.carousel { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--s2); }
+.album { display: flex; gap: var(--s3); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  padding: var(--s2) 0 var(--s3); scrollbar-width: none;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }   /* prints fade out at the edges */
+.album::-webkit-scrollbar { display: none; }
+.album::before, .album::after { content: ""; flex: 0 0 calc(50% - clamp(220px, 28vw, 340px) / 2 - var(--s3)); }   /* lets the first and last print reach the centre */
+.album:focus-visible { outline-offset: -2px; }
+.snap { flex: 0 0 clamp(220px, 28vw, 340px); scroll-snap-align: center; margin: 0; position: relative; display: flex; flex-direction: column; gap: .7rem; background: var(--sheet); padding: .7rem .7rem 1rem;   /* a print with a white border */
+  box-shadow: 0 12px 22px -16px color-mix(in srgb, var(--deep) 70%, transparent); opacity: .55; transform: scale(.92); transition: opacity .35s ease, transform .35s ease; }
+.snap.on { opacity: 1; transform: none; }   /* the print in the centre is full size, the ones either side sit back */
+.snap .cut::after { inset: -3px; border-width: 1.5px; }   /* finer outline on the prints */
+.car-btn { width: 2.6rem; height: 2.6rem; display: grid; place-items: center; font-size: 1.1rem; line-height: 1; color: var(--ink); background: var(--sheet); border: 1px solid var(--ink); border-radius: 50%; transition: background .2s, color .2s, opacity .2s; }
+.car-btn:hover:not(:disabled) { background: var(--ink); color: var(--foam); }
+.car-btn:disabled { opacity: .25; }
+.car-count { grid-column: 1 / -1; justify-self: center; margin-top: calc(-1 * var(--s1)); font-size: .9rem; color: var(--slate); text-shadow: none; letter-spacing: .08em; }
+.snap .pic.contain { background: var(--sheet); }
+.snap .pic.contain img { object-fit: contain; padding: 8%; }   /* the shell cut-outs show whole, not cropped */
+.snap .frame { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; }
+.snap .pic { position: relative; display: block; overflow: hidden; aspect-ratio: 4 / 5; }
+.album { align-items: center; }   /* prints of different heights (an Instagram slide is taller) line up on their centres */
+.snap .ig-embed { min-height: 12rem; display: grid; align-content: center; background: var(--sheet); }
+.snap.ig .ig-embed { aspect-ratio: 4 / 5; min-height: 0; align-content: start; overflow: hidden; }   /* same frame as the photo prints: the post's header and photos show, the likes and comments below are cropped off */
+.snap.ig .ig-embed::after { inset: 0; }   /* the outline sits on the frame's edge, since the frame clips anything outside it */
+.snap .ig-embed > a { font-family: var(--type); font-size: .9rem; text-align: center; color: var(--slate); }   /* shows until Instagram's post loads, and stays as a link if it can't */
+.snap .ig-embed .instagram-media { min-width: 0 !important; width: 100% !important; margin: 0 !important; border: 0 !important; box-shadow: none !important; }
+.snap .pic video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: var(--ink); }
+.snap .pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+.snap button.frame:hover img { transform: scale(1.04); }
+.snap figcaption { font-size: .95rem; line-height: 1.3; color: var(--ink); text-align: center; }
+.tape.mini { position: absolute; top: -.7rem; left: 50%; z-index: 5; width: 4.4rem; height: 1.3rem; padding: 0; margin-left: -2.2rem; opacity: .85; }
+.album-group + .album-group { margin-top: var(--s4); }   /* space between the titled carousels */
+.album-view { max-width: min(92vw, 900px); max-height: 92vh; padding: var(--s2); border: 0; background: var(--sheet); box-shadow: 0 30px 60px -20px color-mix(in srgb, var(--ink) 60%, transparent); }
+.album-view::backdrop { background: color-mix(in srgb, var(--foam) 82%, transparent); }
+.album-view form { display: flex; justify-content: flex-end; margin-bottom: var(--s1); }
+.album-view img { display: block; max-width: 100%; max-height: 74vh; margin-inline: auto; object-fit: contain; }
+.album-view p { margin-top: var(--s1); text-align: center; color: var(--slate); text-shadow: none; }
+@media (max-width: 600px) {   /* phones: swipe the prints; the arrows move under the row beside the counter */
+  .carousel { grid-template-columns: auto 1fr auto; }
+  .album { grid-column: 1 / -1; grid-row: 1; gap: var(--s2); }
+  .album::before, .album::after { flex-basis: calc(50% - 70vw / 2 - var(--s2)); }
+  .snap { flex-basis: 70vw; padding: .5rem .5rem .8rem; }
+  .snap figcaption { font-size: .85rem; }
+  .car-btn { grid-row: 2; width: 2.3rem; height: 2.3rem; }
+  .car-btn.prev { grid-column: 1; } .car-btn.next { grid-column: 3; }
+  .car-count { grid-column: 2; grid-row: 2; margin-top: 0; }
+}
+
+/* ---------- media (instagram) ---------- */
+.ig-posts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: var(--s2); align-items: stretch; }   /* every card in a row is the same height, so the posts line up as one set */
+.ig-posts:not(:has(li)), .ig-group:not(:has(li)):not(:has(.ig-soon)) { display: none; }
+.ig-group-title:has(+ .ig-group-sub) { margin-bottom: var(--s1); }
+.ig-group-sub { font-size: .95rem; color: var(--slate); text-shadow: none; letter-spacing: .03em; margin-bottom: var(--s3); }   /* small line under a sub-section title */
+.ig-soon { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); max-width: 600px; }   /* placeholder frames for a sub-section with no links yet */
+.ig-group:has(li) .ig-soon { display: none; }
+.media-sec:has(.ig-posts li) .ig-empty { display: none; }   /* placeholders only while there are no links yet */
+.ig-group { margin-top: var(--s5); }
+.sec-head + .ig-posts:not(:has(li)) + .ig-group { margin-top: 0; }   /* no extra gap when a sub-section comes first */
+.ig-group-title { font-size: clamp(1.8rem, 3.6vw, 2.6rem); font-style: italic; margin-bottom: var(--s3); padding-bottom: var(--s1); border-bottom: 1px solid color-mix(in srgb, var(--ink) 25%, transparent); }
+.ig-posts li { min-width: 0; display: flex; flex-direction: column; background: var(--sheet); padding: .5rem; box-shadow: 0 12px 22px -16px color-mix(in srgb, var(--deep) 70%, transparent); }
+.ig-posts li > a { display: block; font-family: var(--type); font-size: .9rem; padding: var(--s3) var(--s2); text-align: center; color: var(--slate); }   /* shows until Instagram's embed loads, and stays as a link if it can't */
+.ig-posts li.ig-img { justify-content: center; }   /* a plain image in a list of Instagram posts */
+.ig-posts li.ig-img img { display: block; width: 100%; height: auto; }
+.ig-posts li.ig-card > a { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--s2); padding: var(--s4) var(--s3); text-align: left; text-decoration: none; color: var(--ink); font-family: var(--sans); border: 1.5px dashed var(--indigo-pale); }   /* a post that can't be embedded, shown as a link */
+.ig-card-tag { font-family: var(--type); font-size: .85rem; color: var(--slate); }
+.ig-card-title { font-family: var(--display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-style: italic; line-height: 1.05; }
+.ig-card-text { font-size: .95rem; color: var(--slate); }
+.ig-card-go { font-family: var(--type); font-size: .95rem; border-bottom: 1px solid currentColor; align-self: flex-start; padding-bottom: .15rem; }
+.ig-posts li.ig-card > a:hover .ig-card-go { color: var(--deep); }
+.ig-posts .instagram-media { min-width: 0 !important; width: 100% !important; margin: 0 !important; border: 0 !important; box-shadow: none !important; }
+.ig-empty { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); max-width: 760px; }
+.ig-ph .pic { display: block; position: relative; overflow: hidden; aspect-ratio: 4 / 5; }
+.ig-ph::after { inset: -3px; border-width: 1.5px; }
+@media (max-width: 600px) { .ig-empty { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ig-empty > :nth-child(3) { display: none; } }
+
+/* ---------- sketchbook ---------- */
+.sketchbook { position: relative; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s3); }
+.sketchbook > * { position: relative; z-index: 1; }
+.sb-a { grid-column: 1 / 6; min-height: 420px; background: var(--sheet); }
+.sb-a canvas { width: 100%; height: 100%; position: absolute; inset: 0; }
+.sb-b { grid-column: 6 / 10; min-height: 420px; }
+.sb-c { grid-column: 10 / 13; display: flex; flex-direction: column; gap: var(--s3); }
+.sb-c .sea { aspect-ratio: 1; }
+.sb-notes { grid-column: 1 / 13; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); padding-top: var(--s3); }
+
+/* ---------- about ---------- */
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: var(--s5); align-items: start; }
+.about > .portrait-wrap { grid-column: 1; grid-row: 1; }
+.about > .about-copy { grid-column: 2; grid-row: 1 / 3; }
+.about > .upcoming { grid-column: 1; grid-row: 2; }   /* under the photo on wide screens; after Experience when the columns stack */
+.photo-pair { display: grid; margin-top: var(--s4); max-width: 420px; padding-bottom: var(--s3); }   /* two photos stacked in one cell so they overlap like a pinned collage */
+.photo-pair > * { grid-area: 1 / 1; aspect-ratio: 4 / 5; }
+.pp-a { width: 60%; transform: rotate(-3deg); }
+.pp-b { width: 50%; justify-self: end; margin-top: 30%; z-index: 2; transform: rotate(4deg); box-shadow: 0 14px 28px -16px color-mix(in srgb, var(--deep) 60%, transparent); }
+.photo-pair > .poster, .photo-pair > .shot { aspect-ratio: 3 / 4; background: var(--sheet); }   /* the show poster and studio photo, shown whole at their own shape */
+.poster img, .shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.about { grid-template-rows: auto 1fr; }
+.about .portrait { position: relative; aspect-ratio: 4 / 5; }
+.about .portrait { overflow: hidden; }
+.about .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+  transform: scale(1.15); transform-origin: 72% 28%; }   /* zoomed in, framed toward the upper right of the photo */
+.about .portrait-wrap { position: relative; }
+.shell {                         /* the white scallop shell, cut out and resting in the space beside the About quote */
+  position: absolute; right: 4%; top: 0; z-index: 4; width: clamp(120px, 13vw, 170px);
+  transform: rotate(60deg); pointer-events: none;
+  filter: drop-shadow(0 12px 14px color-mix(in srgb, var(--deep) 35%, transparent));
+}
+.shell img { display: block; width: 100%; height: auto; }
+.shell-b { display: block; height: auto; pointer-events: none; filter: drop-shadow(0 8px 10px color-mix(in srgb, var(--deep) 25%, transparent)); }
+#custom .sec-head { position: relative; }
+#custom .sec-head p > .shell-b {   /* floats beside the description so the words wrap around it and are never covered */
+  float: right; width: 80px; margin: 0 0 .5rem 1rem; transform: rotate(18deg);
+}
+.about-copy { display: flex; flex-direction: column; gap: var(--s3); position: relative; }
+.about-copy .big { font-family: var(--display); font-size: clamp(1.8rem, 3.2vw, 2.6rem); line-height: 1.1; max-width: 24ch; font-style: italic; }
+.about-copy .big.name { font-style: normal; font-weight: 500; letter-spacing: -.01em; }   /* just the name, set upright and clean */
+.about-copy p { max-width: 62ch; }
+.skills { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; font-size: .92rem; }
+.skills li::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 1.2rem; border-radius: 50%; vertical-align: .12em; background: radial-gradient(circle at 35% 30%, var(--sheet) 0 1px, var(--pearl) 1.5px, var(--nacre) 3px, var(--slate) 3.6px); }
+.skills li:last-child::after { content: ""; }
+.cv { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s4); }
+.cv ul { list-style: none; margin: var(--s1) 0 0; padding: 0; }
+.cv li { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: var(--s2); padding-block: .7rem; border-top: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); font-variant-numeric: tabular-nums; }
+.cv ul.no-yr li { grid-template-columns: minmax(0, 1fr); }   /* experience entries show their dates in the line underneath instead */
+.cv .yr { white-space: nowrap; color: var(--slate); font-size: .88rem; }
+.cv .where { display: block; color: var(--slate); font-size: .86rem; }
+.cv .duties { list-style: disc; margin: .5rem 0 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .3rem; font-size: .9rem; color: var(--slate); }
+.cv .duties li { display: list-item; padding: 0; border: 0; }   /* plain bullets, not the dated rows of the outer list */
+
+/* ---------- contact ---------- */
+.contact { position: relative; isolation: isolate; margin-block: var(--s4) var(--s4); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--s4); align-items: end; padding-block: var(--s5); border-top: 1px solid var(--ink); }
+.contact > .scale-photo {        /* the fish-scale photo, full-bleed behind contact, fading in and out at its edges */
+  position: absolute; z-index: -2; pointer-events: none;
+  top: 0; bottom: -20%; left: calc(50% - 50vw); width: 100vw;   /* starts at the contact line so it never covers the section above */
+  background: center / cover no-repeat;   /* the photo is set by .loaded, added as the section nears the screen */
+  opacity: .4;
+  -webkit-mask: linear-gradient(180deg, transparent 0%, #000 40%, #000 70%, transparent 100%), linear-gradient(90deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask: linear-gradient(180deg, transparent 0%, #000 40%, #000 70%, transparent 100%), linear-gradient(90deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
+          mask-composite: intersect;
+}
+.contact > * { position: relative; z-index: 1; }
+section.soon + .contact { border-top: 0; }   /* the coming-soon row above already draws a line, so the contact section skips its own */
+.contact h2 { font-size: clamp(3.2rem, 9.5vw, 7.5rem); font-weight: 500; }
+.contact h2 em { font-style: italic; font-weight: 400; }
+.contact-box { display: flex; flex-direction: column; gap: var(--s2); background: color-mix(in srgb, var(--foam) 88%, transparent); padding: var(--s2); }
+.email-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2); border-bottom: 1px solid var(--ink); padding-bottom: .5rem; }
+.email-row code { font-family: var(--type); font-size: 1.4rem; user-select: all; min-width: 0; overflow-wrap: anywhere; flex: 1 1 12rem; }
+.copy { font-family: var(--sans); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; background: none; color: var(--ink); border: 1px solid var(--ink); padding: .35rem .8rem; cursor: pointer; }
+.copy:hover { background: var(--ink); color: var(--foam); }
+.socials { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.socials a { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; text-underline-offset: 4px; }
+
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s2); padding-block: 0 var(--s4); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .nav ul { gap: .9rem; }   /* six links: tighter spacing keeps them on one line beside the logo */
+  .nav a.lk { letter-spacing: .08em; }
+  .logo { white-space: nowrap; font-size: .8rem; }
+  .services { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .before-after { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wave, .hero-title { grid-column: 1 / -1; grid-row: auto; }
+  .wave { margin-bottom: 2.4rem; }   /* room for the location line under it */
+  .wave { min-height: 360px; }
+  .sb-a { grid-column: 1 / 7; } .sb-b { grid-column: 7 / 13; } .sb-c { grid-column: 1 / 13; flex-direction: row; } .sb-c .sea { flex: 1; }
+  .sb-notes { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+  .about, .contact { grid-template-columns: minmax(0, 1fr); }
+  .about > .portrait-wrap, .about > .about-copy, .about > .upcoming { grid-column: 1; grid-row: auto; }
+  .about { grid-template-rows: none; row-gap: var(--s4); }   /* stacked: no stretched row, tighter gap before Upcoming Projects */
+  .about .portrait-wrap { max-width: 420px; }
+  .shell { right: 0; top: -10px; width: 95px; }
+  #custom .sec-head p > .shell-b { width: 60px; }
+}
+@media (max-width: 600px) {
+  .nav ul { gap: var(--s2); }
+  .nav { flex-wrap: wrap; row-gap: .4rem; }   /* the links drop under the logo if they don't fit beside it */
+  .nav ul li:nth-child(n+3):not(:has(a[href="#album"])) { display: none; }   /* phones: About, Sketchbook and Photo Album */
+  .wave { min-height: 280px; }
+  .sec-head { grid-template-columns: minmax(0, 1fr); }
+  .sec-head p { justify-self: start; }
+  .sb-a, .sb-b { grid-column: 1 / -1; min-height: 340px; }
+  .cv { grid-template-columns: minmax(0, 1fr); }
+  .services, .before-after, .how, .steps { grid-template-columns: minmax(0, 1fr); }
+  .service li { grid-template-columns: minmax(0, 1fr); gap: .1rem; }
+  .tape { font-size: 1.2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="rough" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="3"/>
+    <feDisplacementMap in="SourceGraphic" scale="6"/>
+  </filter>
+  <!-- three re-draws of the same rough line, cycled to make the drawn outlines "boil" like hand-drawn animation -->
+  <filter id="boil-a" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="11"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter>
+  <filter id="boil-b" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="27"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter>
+  <filter id="boil-c" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="43"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter>
+  <filter id="splatter" x="-30%" y="-30%" width="160%" height="160%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="5" seed="11"/>
+    <feDisplacementMap in="SourceGraphic" scale="90"/>
+  </filter>
+</svg>
+
+<canvas class="jellies" id="jellies" aria-hidden="true"></canvas>
+
+<div class="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="logo" href="#top">last updated nov. 2026</a>
+    <ul>
+      <li><a class="lk" href="#about">About</a></li>
+      <li><a class="lk" href="#process">Sketchbook</a></li>
+      <li><a class="lk" href="#custom">Custom</a></li>
+      <li><a class="lk" href="#album">Photo Album</a></li>
+      <li><a class="lk" href="#media">Media</a></li>
+      <li><a class="lk" href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</div>
+
+<div class="wrap">
+  <header class="board" id="top">
+    <div class="splat" style="left:-4%; top:46%; width:34%; height:52%;" aria-hidden="true"></div>
+
+    <div class="wave cut" aria-label="Animated sea with breaking foam"><canvas id="wave"></canvas><p class="tw location">based in the san francisco bay area</p></div>
+
+    <div class="hero-title">
+      <span class="label">Welcome to:</span>
+      <h1>YVM</h1>
+      <p class="lede">Fashion design student reworking preloved fabrics into custom pieces and promoting different ways to repair clothing you already have.</p>
+      <div class="ctas"><a href="#process" hidden>View sketchbook</a><a href="#contact">Contact</a></div>
+    </div>
+
+  </header>
+</div>
+
+<main class="wrap">
+  <section class="block has-photo" id="about">
+    <div class="pearl-photo" aria-hidden="true"></div>
+    <div class="sec-head">
+      <h2>About</h2>    </div>
+    <div class="about">
+      <div class="portrait-wrap cut">
+        <div class="portrait print"><img src="gap-sf.jpg" alt="Sewing on an industrial Singer machine on a rooftop facing the Bay Bridge, wearing a lace-patched denim jacket" loading="lazy" decoding="async"><span class="slot">Gap Inc, San Francisco</span></div>
+      </div>
+      <div class="about-copy">
+        <p class="big name">YVM</p>
+        <div class="cv shows">
+          <div>
+            <span class="label">Recent Shows &amp; Press</span>
+            <ul>
+              <li><span class="yr">October 2026</span><span>Dresser volunteer<span class="where">Oakland Style LIVE Fashion Show</span></span></li>
+              <li><span class="yr">September 2026</span><span>Designer<span class="where">Flower Piano SF Botanical Garden Fashion Show</span></span></li>
+              <li><span class="yr">May 2026</span><span>Dresser volunteer<span class="where">Luxe Affair Fashion Show</span></span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="cv">
+          <div>
+            <span class="label">Experience</span>
+            <ul class="no-yr">
+              <li><div>Intern at HolyStitch<span class="where">2025 – current</span>
+                <ul class="duties">
+                  <li>Taught students how to sew, design, and pattern garments and accessories.</li>
+                  <li>Worked on alterations, hems and repairs for custom orders.</li>
+                  <li>Worked with companies including GAP and Levi’s for events and pop-ups.</li>
+                  <li>Experience with customer service at events and in-store.</li>
+                  <li>Helped organize fabric and supplies around the store and factory.</li>
+                </ul>
+              </div></li>
+              <li><div>Independent fashion designer<span class="where">2023 – current</span>
+                <ul class="duties">
+                  <li>Producer, director and designer for Outré Collective fashion show focusing on representing fashion design students while promoting upcycled clothing.</li>
+                  <li>Dresser and stylist for fashion shows across the Bay Area through CCSF.</li>
+                  <li>Delivered a custom performance costume for the San Francisco Conservatory of Music, managing execution from concept development and patterning to fitting iterations and final garment construction.</li>
+                  <li>Creating independent projects, which include designing clothing and accessories, mainly working with denim.</li>
+                  <li>Experience with capturing videos and photos for designs using the Sony a6100 and DJI Nano.</li>
+                  <li>Experience with video editing and animation using Adobe After Effects, Photoshop, and Procreate.</li>
+                </ul>
+              </div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+        <div class="cv upcoming">
+          <div>
+            <span class="label">Upcoming Projects</span>
+            <ul>
+              <li><span class="yr">December 2026</span><span>Independent project<span class="where">Denim mural in SF public display</span></span></li>
+              <li><span class="yr">December 2026</span><span>Designer<span class="where">SJSU Fashion Creatives Fashion Show</span></span></li>
+              <li><span class="yr">January 2027</span><span>Custom &amp; repair commissions<span class="where">Denim reworks, lace details and repairs</span></span></li>
+              <li><span class="yr">April 2027</span><span>Producer, director, designer<span class="where">Outré Collective 2nd Fashion Show</span></span></li>
+            </ul>
+            <div class="photo-pair">
+              <div class="pp-a print shot cut"><img src="studio-sewing.jpg" alt="Sewing a denim, lace and canvas patchwork piece on a Juki industrial machine in the studio" loading="lazy" decoding="async"></div>
+              <div class="pp-b print poster cut"><img src="outre-collective-poster.jpg" alt="Outré Collective poster: an upcycled fashion show, Wednesday October 28, 2026, 6–9 pm, Minna Gallery, 111 Minna St, San Francisco. Free entry, 21+." loading="lazy" decoding="async"></div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </section>
+
+  <section class="block album-sec" id="album">
+    <div class="sec-head">
+      <h2>Photo <em>album</em></h2>
+      <p>Snapshots from the studio, shows and fittings: work in progress and finished pieces.</p>
+    </div>
+    <!-- PHOTO CAROUSELS. Each <div class="album-group"> is one titled carousel.
+         To add a photo: copy one <figure class="snap"> inside a carousel, set the img src and alt, and write a caption.
+         Slides show in the order they are listed. Empty frames (class "empty") are placeholders: swap the <span class="pic sea ..."> for a real <img>.
+         To add another carousel: copy a whole album-group block and change its title. -->
+    <div class="album-group">
+      <h3 class="ig-group-title">Studio &amp; work</h3>
+      <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Studio and work">
+        <button class="car-btn prev" type="button" aria-label="Previous photo">&larr;</button>
+        <div class="album" tabindex="0">
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: HolyStitch team"><span class="pic print contain"><img src="holystitch-team.jpg" alt="HolyStitch newsletter: &quot;whats going on?!?&quot; with the headline More interns, more classes, more impact, more jeans, and a group photo of the interns, apprentices, Denim School students and founder in the studio" loading="lazy" decoding="async" style="padding: 0"></span></button>
+          <figcaption class="tw">@ HolyStitch</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: sewing in the studio"><span class="pic print"><img src="studio-sewing.jpg" alt="Sewing a denim, lace and canvas patchwork piece on a Juki industrial machine in the studio" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Commission: jeans @ Holystitch</figcaption>
+        </figure>
+        <figure class="snap ig">   <!-- an Instagram post as a slide: paste the post link in the <a> below -->
+          <div class="ig-embed cut"><a href="https://www.instagram.com/p/DbJtB8Ej_AM/">View on Instagram</a></div>
+          <figcaption class="tw">Collaboration with interns: 501c3 Production line @ Holystitch</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: Outré Collective look, pink gown"><span class="pic print"><img src="outre-look-1.jpg" alt="Runway at Outré Collective: a model in a floor-length pale pink chiffon gown with a dark beaded halter bodice, walking past a crowd taking photos" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Looks from Outré Collective</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: Outré Collective look, printed top and pearl shorts"><span class="pic print"><img src="outre-look-2.jpg" alt="Runway at Outré Collective: a model in a draped black-and-white print top over frayed light shorts trimmed with pearl strands, with fluffy white heels" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Looks from Outré Collective</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: Outré Collective look with sewing-machine bag"><span class="pic print"><img src="outre-look-3.jpg" alt="Runway at Outré Collective: the same printed look from behind, the model carrying a white sewing-machine-shaped bag with a pearl handle" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Looks from Outré Collective</figcaption>
+        </figure>
+        <figure class="snap video">   <!-- a video slide: plays silently while it's the centred slide on screen; the controls turn on sound -->
+          <div class="frame cut"><span class="pic print"><video src="studio-video.mp4" poster="studio-video-poster.jpg" muted loop playsinline preload="none" controls aria-label="Costume design for SF Conservatory of Music"></video></span></div>
+          <figcaption class="tw">Costume design for SF Conservatory of Music</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: display for HolyStitch"><span class="pic print"><img src="holystitch-display.jpg" alt="Mannequin display: a cropped washed-navy hoodie with a hand-painted pink and purple squiggle, dark wide-leg jeans and a floral denim tote with a pink keychain" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Display in HolyStitch: Hoodie, Jeans &amp; Tote</figcaption>
+        </figure>
+        <figure class="snap">
+          <span class="tape mini" aria-hidden="true"></span>
+          <button class="frame cut" type="button" aria-label="Open photo: upcycled denim patchwork jeans"><span class="pic print"><img src="denim-patchwork-commission.jpg" alt="Back of blue jeans on a mannequin with dark denim koi fish patchwork across the pocket and blue wave stitching" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Commission: Upcycled denim patchwork &amp; sashiko hand stitching</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: lace patchwork and embroidery jacket"><span class="pic print"><img src="lace-embroidery.jpg" alt="Dark denim jacket with distressed patches backed in black-and-white lace and pink hand-drawn embroidery on the chest and sleeve" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Lace patchwork &amp; hand drawn embroidery designs</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: look 1 for Flower Piano Show 2026"><span class="pic print"><img src="flower-piano-look-1.jpg" alt="Outfit fitting: a sheer white tie-front blouse with lace-trimmed balloon sleeves over a pink gingham ruffle mini skirt edged in eyelet lace, with tan cowboy boots" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Look 1 for Flower Piano Show 2026</figcaption>
+        </figure>
+        <figure class="snap">
+          <span class="tape mini" aria-hidden="true"></span>
+          <button class="frame cut" type="button" aria-label="Open photo: mini jean keychains"><span class="pic print"><img src="jean-keychains.jpg" alt="Tiny dark denim jeans with gold topstitching and rolled selvedge cuffs, laid out on a sewing table beside scissors" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Mini jean keychains @ HolyStitch</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: jeans with embroidery"><span class="pic print"><img src="jeans-embroidery-commission.jpg" alt="Raw dark denim jeans in progress, with a gingham pocket lining and a back pocket embroidered with a little yellow bird and a white flower" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Commission: jeans with embroidery</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: upcycled denim bag"><span class="pic print"><img src="denim-bag-commission.jpg" alt="Tote bag pieced from black, striped and floral-print denim, with a jeans fly, back pocket and waistband built into the front" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Commission: Upcycled denim bag</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: upcycled denim shoulder bag"><span class="pic print"><img src="denim-bag-commission-2.jpg" alt="Shoulder bag made from light-wash jeans, keeping the waistband, fly and pocket, with floral-print denim panels and a denim strap, on a green cutting mat" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Commission: Upcycled denim bag</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: upcycled patchwork denim bag"><span class="pic print"><img src="denim-bag-commission-3.jpg" alt="Shoulder bag pieced from mid-wash, light-wash and raw dark denim, keeping a jeans waistband, belt loops and back pocket, with a dark denim strap" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Commission: Upcycled denim bag</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: raw denim tote bag"><span class="pic print"><img src="denim-bag-commission-4.jpg" alt="Raw dark denim tote with a large front pocket edged in white selvedge, ring-fastened straps and a small matching pouch clipped on" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Commission: Upcycled denim bag</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: patchwork denim tote on a mannequin"><span class="pic print"><img src="denim-bag-commission-5.jpg" alt="Patchwork tote in acid-wash and mid-wash denim with a jeans back pocket hand-stitched in light blue crosses, worn on a mannequin's shoulder" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Commission: Upcycled denim bag</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: jeans made from upcycled fabrics"><span class="pic print"><img src="upcycled-jeans.jpg" alt="Dark raw denim jeans with a pink lace band across the back yoke, pink lace showing through a distressed back pocket, and raw frayed hems" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Independent work: Jeans made from upcycled fabrics</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: behind the scenes of a commission"><span class="pic print"><img src="behind-the-scenes-commission.jpg" alt="Raw dark denim jeans in progress on a sewing table, with a back pocket embroidered with two orange fish and bubbles" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Behind the Scenes: Commission</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: behind the scenes, studio work"><span class="pic print"><img src="behind-the-scenes-studio.jpg" alt="Cut pieces of dark denim and black-and-white floral fabric laid out with a pocket pattern on a green cutting mat" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Behind the Scenes: Studio work</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: behind the scenes, chalking"><span class="pic print"><img src="behind-the-scenes-chalking.jpg" alt="Kneeling on a large cutting table in the studio, chalking pattern pieces onto blue fabric, with paper patterns hanging on a rail behind" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Behind the Scenes: Chalking</figcaption>
+        </figure>
+        <figure class="snap video">
+          <div class="frame cut"><span class="pic print"><video src="embroidery-video.mp4" poster="embroidery-video-poster.jpg" muted loop playsinline preload="none" controls aria-label="A multi-needle embroidery machine stitching a white star outline onto denim in a hoop"></video></span></div>
+          <figcaption class="tw">Behind the Scenes: Embroidery</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: my first pair of jeans"><span class="pic print"><img src="first-jeans.jpg" alt="Grey denim jeans with pink topstitching and a pale green brocade pocket facing showing at the back pocket, laid on a concrete floor" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">My first pair of jeans!</figcaption>
+        </figure>
+        </div>
+        <button class="car-btn next" type="button" aria-label="Next photo">&rarr;</button>
+        <p class="car-count tw" aria-live="polite"><span class="car-now">1</span> / <span class="car-total"></span></p>
+      </div>
+    </div>
+
+    <div class="album-group">
+      <h3 class="ig-group-title">Shows &amp; events</h3>
+      <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Shows and events">
+        <button class="car-btn prev" type="button" aria-label="Previous photo">&larr;</button>
+        <div class="album" tabindex="0">
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: Outré Collective, October 2026"><span class="pic print"><img src="outre-show-speech.jpg" alt="Speaking at the Outré Collective show: two hosts at a music stand with a microphone in front of white draped curtains, models waiting at the side and the audience seated in the foreground" loading="lazy" decoding="async" style="object-position: 45% 50%"></span></button>
+          <figcaption class="tw">Outré Collective Oct. 2026</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: emergency alterations backstage at Outré Collective"><span class="pic print"><img src="backstage-outre-alterations.jpg" alt="Kneeling on the floor backstage hand-sewing a white sheer piece, beside a mint sewing machine on a stool, with the pearl-trimmed shorts and pearl strands laid out in front" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Backstage: Outré Collective Emergency Alterations</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: backstage group at Outré Collective"><span class="pic print"><img src="backstage-outre-group.jpg" alt="Backstage group photo of the Outré Collective models and team in their looks, smiling and making peace signs in front of an ornate gold-framed red door" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Backstage: Outré Collective</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: aftershow at Outré Collective"><span class="pic print"><img src="aftershow-outre.jpg" alt="Three people posing together at the Outré Collective aftershow, two of the models still in their runway looks, in a bar with a mural and a film projected on the wall" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Aftershow: Outré Collective</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: artist booth at Outré Collective"><span class="pic print"><img src="outre-artist-booth.jpg" alt="Artist booth table at Outré Collective with illustrated sticker sheets and figure cutouts for sale, lace swatches, a watercolour fashion sketch, and seashells on a printed cloth" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Artist booth at Outré Collective</figcaption>
+        </figure>
+        <figure class="snap video">
+          <span class="tape mini" aria-hidden="true"></span>
+          <div class="frame cut"><span class="pic print"><video src="flower-piano-runway.mp4" poster="flower-piano-runway-poster.jpg" muted loop playsinline preload="none" controls aria-label="Runway at the Flower Piano fashion show, SF Botanical Garden"></video></span></div>
+          <figcaption class="tw">Look 1: Flower Piano fashion show</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: backstage at Luxe Affair Fashion Show"><span class="pic print"><img src="backstage-luxe-affair.jpg" alt="Backstage dressing room with rose wallpaper and floral valances, a garment steamer, and a rail of tagged looks with model photo cards clipped to the hangers" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Backstage: Luxe Affair Fashion Show</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: customization at Gap Inc."><span class="pic print"><img src="gap-customization.jpg" alt="Bring Your Own Denim customization event at Gap Inc.: a table of rivet and snap presses in green, teal and pink, jars of studs, pearls and buttons, paint markers, and a hand-painted BYOD sign behind" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Customization @ Gap Inc.</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: chainstitch at Gap Inc."><span class="pic print"><img src="gap-chainstitch.jpg" alt="Chainstitching on a vintage Singer machine on the Gap Inc. rooftop, wearing a lace-patched denim jacket, with the Bay Bridge and a rail of white tees behind" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Chainstitch @ Gap Inc.</figcaption>
+        </figure>
+        <figure class="snap">
+          <button class="frame cut" type="button" aria-label="Open photo: backstage alterations for SF Conservatory of Music"><span class="pic print"><img src="backstage-sfcm-alterations.jpg" alt="Trimming threads at the shoulder of a grey wrap-front costume with black floral appliqué, worn by a performer, with a double bass player in the background" loading="lazy" decoding="async"></span></button>
+          <figcaption class="tw">Backstage: Alterations for SF Conservatory of Music performance</figcaption>
+        </figure>
+        </div>
+        <button class="car-btn next" type="button" aria-label="Next photo">&rarr;</button>
+        <p class="car-count tw" aria-live="polite"><span class="car-now">1</span> / <span class="car-total"></span></p>
+      </div>
+    </div>
+    <dialog class="album-view" id="album-view" aria-label="Photo">
+      <form method="dialog"><button class="copy" type="submit">Close</button></form>
+      <img alt="">
+      <p class="tw"></p>
+    </dialog>
+  </section>
+
+  <section class="block media-sec" id="media">
+    <div class="sec-head">
+      <h2>Media</h2>
+      <p>Videos, reels and posts of recent work, shows and process from Instagram.</p>
+    </div>
+    <!-- TO ADD A POST: paste its Instagram link as a new line in the list below, e.g.
+           <li><a href="https://www.instagram.com/p/ABC123xyz/">caption shown before it loads</a></li>
+         Links to posts (/p/...), reels (/reel/...) and IGTV (/tv/...) all work. The newest goes first.
+         While every list is empty, the three "coming soon" frames show instead.
+         TO ADD A SUB-SECTION: copy a whole <div class="ig-group">…</div> block, change its heading and put its links in its list. -->
+    <ul class="ig-posts">
+    </ul>
+    <div class="ig-group">
+      <h3 class="ig-group-title">OUTRÉ COLLECTIVE OCT. 2026</h3>
+      <p class="ig-group-sub tw">@collectiveoutre on instagram &amp; tiktok</p>
+      <ul class="ig-posts">
+        <li><a href="https://www.instagram.com/reel/DfGmttahpSE/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/reel/DfK246dvfk7/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/p/DfWE0j1m-rV/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/p/DfTWulQmwKr/">View on Instagram</a></li>
+        <li class="ig-card"><a href="https://www.instagram.com/p/DflfwqPm-Ox/" target="_blank" rel="noopener" data-no-embed>   <!-- this account has turned off embedding, so it shows as a link card -->
+          <span class="ig-card-tag">Instagram · @rolleifriend</span>
+          <span class="ig-card-title">The full show, shot entirely on film</span>
+          <span class="ig-card-text">Outré Collective Fashion Show in partnership with @upcyclers_ at the @111minnagallery: five designers promoting sustainability in fashion.</span>
+          <span class="ig-card-go">View the photos on Instagram &rarr;</span>
+        </a></li>
+      </ul>
+      <div class="ig-soon">   <!-- shows until links are added to the list above -->
+        <div class="ig-ph cut"><span class="pic print sea t2"><span class="slot">coming soon</span></span></div>
+        <div class="ig-ph cut"><span class="pic print sea t3"><span class="slot">coming soon</span></span></div>
+        <div class="ig-ph cut"><span class="pic print sea t4"><span class="slot">coming soon</span></span></div>
+      </div>
+    </div>
+    <div class="ig-group">
+      <h3 class="ig-group-title">HOLYSTITCH PROJECTS &amp; EVENTS</h3>
+      <ul class="ig-posts">
+        <li><a href="https://www.instagram.com/p/DOUhTppASVS/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/p/DbGi9vCB3_s/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/reel/DWUDwTvCu6q/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/reel/DdZiT5hhdRr/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/reel/DQIm24sER_M/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/reel/DXx6WogKI7c/">View on Instagram</a></li>
+      </ul>
+    </div>
+    <div class="ig-group">
+      <h3 class="ig-group-title">San Francisco Conservatory of Music</h3>
+      <ul class="ig-posts">
+        <li><a href="https://www.instagram.com/p/DL0G88ZvqrH/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/reel/DLqnWfSPHsA/">View on Instagram</a></li>
+        <li><a href="https://www.instagram.com/p/DMEtho_Nrcj/">View on Instagram</a></li>
+      </ul>
+    </div>
+    <div class="ig-empty">
+      <div class="ig-ph cut"><span class="pic print sea t2"><span class="slot">post coming soon</span></span></div>
+      <div class="ig-ph cut"><span class="pic print sea t3"><span class="slot">reel coming soon</span></span></div>
+      <div class="ig-ph cut"><span class="pic print sea t4"><span class="slot">post coming soon</span></span></div>
+    </div>
+  </section>
+
+  <section class="block soon" id="process">
+    <div class="soon-row"><h2>Sketch<em>book</em></h2><span class="tw">coming in 2027</span></div>
+    <!-- hidden until there are sketchbook pages to show: remove "hidden" and the row above, and restore the sec-head -->
+    <div class="sketchbook" hidden>
+      <div class="splat" style="left:34%; top:-10%; width:30%; height:60%;" aria-hidden="true"></div>
+      <div class="sb-a cut"><canvas id="sketchpage" aria-hidden="true"></canvas><span class="slot">photo: sketchbook page</span></div>
+      <div class="sb-b sea t2 cut"><span class="slot">photo: mood board</span></div>
+      <div class="sb-c">
+        <div class="sea ice cut"><span class="slot">photo: ruffle sample</span></div>
+        <div class="sea deep t4 cut"><span class="slot">photo: sequin swatch</span></div>
+      </div>
+      <div class="sb-notes">
+        <p class="tw">fabrics: organza and tulle for foam, paillettes for light on water</p>
+        <p class="tw">silhouette: a bell on top, then everything trails and floats, like a jellyfish</p>
+        <p class="tw">colour: white, grey sea, pearl, one cold blue. black only as ink.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block soon" id="custom">
+    <div class="soon-row"><h2>Custom <em>&amp; repair</em></h2><span class="tw">coming in 2027</span></div>
+    <!-- hidden until the custom and repair work is ready: remove "hidden" from this block and delete the row above -->
+    <div hidden>
+    <div class="sec-head">
+      <h2>Custom <em>&amp; repair</em></h2>
+      <p><img class="cutout shell-b" src="shell-pink.jpg" alt="" width="410" height="600" loading="lazy" decoding="async">One-off pieces and repairs for jeans and denim. Bring me a pair you love and I'll make it new, or keep it going for another ten years.</p>
+    </div>
+
+    <div class="before-after">
+      <figure class="ba">
+        <div class="pair"><div class="ba-photo"><img src="lace-jeans.jpg" alt="Back of light-wash jeans with white lace appliqué across the yoke and pockets" loading="lazy" decoding="async"><span class="slot">before</span></div><div class="denim"><span class="slot">after</span></div></div>
+        <figcaption><span class="tw">knee blowout</span><span>Sashiko patch in white thread</span></figcaption>
+      </figure>
+      <figure class="ba">
+        <div class="pair"><div class="denim"><span class="slot">before</span></div><div class="denim faded"><span class="slot">after</span></div></div>
+        <figcaption><span class="tw">old straight-leg jeans</span><span>Reworked into a bias-cut maxi skirt</span></figcaption>
+      </figure>
+      <figure class="ba">
+        <div class="pair"><div class="denim faded"><span class="slot">before</span></div><div class="denim"><span class="slot">after</span></div></div>
+        <figcaption><span class="tw">plain jacket</span><span>Hand-embroidered wave across the back yoke</span></figcaption>
+      </figure>
+    </div>
+
+    <div class="notice"><span class="tape">Under construction</span><p class="notice-note">commission opening early 2027</p></div>
+
+    <div class="wip" aria-hidden="true" inert>
+    <div class="services">
+      <article class="service cut">
+        <span class="tag">Custom pieces</span>
+        <h3>Make it yours</h3>
+        <ul>
+          <li><b>Reworked jeans</b><span>Cut apart and rebuilt into a new shape: wide leg, bias skirt, corset top.</span></li>
+          <li><b>Patchwork</b><span>Panels from several old pairs pieced into one garment.</span></li>
+          <li><b>Hand embroidery</b><span>Waves, shells and lettering stitched by hand onto pockets, hems or yokes.</span></li>
+          <li><b>Bleach and paint</b><span>Hand-painted designs, bleach washes and custom fading.</span></li>
+          <li><b>Ruffles and lace</b><span>Organza or lace trims added to hems, cuffs and seams.</span></li>
+        </ul>
+      </article>
+      <article class="service cut">
+        <span class="tag">Repairs</span>
+        <h3>Keep them going</h3>
+        <ul>
+          <li><b>Visible mending</b><span>Sashiko-style running stitch over a patch, so the repair becomes a feature.</span></li>
+          <li><b>Invisible darning</b><span>Thread rewoven into thin spots and small holes in matching colour.</span></li>
+          <li><b>Crotch and thigh blowouts</b><span>Reinforced from the inside before the hole spreads.</span></li>
+          <li><b>Knees and pockets</b><span>Torn knees backed or patched, pocket bags replaced.</span></li>
+          <li><b>Hems and hardware</b><span>Original-hem shortening, new zips, buttons and rivets.</span></li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="how">
+      <ol class="steps">
+        <li><b>Send photos</b><span>Email me pictures of the piece and tell me what you'd like.</span></li>
+        <li><b>Get a quote</b><span>I reply with ideas, a price and a timeframe for your piece.</span></li>
+        <li><b>Drop off or post it</b><span>Bring it in person or send it once we've agreed the details.</span></li>
+        <li><b>Collect it</b><span>I send progress photos along the way, then it's ready to wear.</span></li>
+      </ol>
+    </div>
+    </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="scale-photo" aria-hidden="true"></div>
+    <div>
+      <p class="tw spaced" style="margin-bottom:.8rem">open to opportunities · 2027</p>
+      <h2>Write <em>to me</em></h2>
+    </div>
+    <div class="contact-box">
+      <div class="email-row">
+        <code id="email">ay015@icloud.com</code>
+        <button class="copy" id="copy-email" type="button">Copy</button>
+      </div>
+      <div class="socials" hidden>   <!-- hidden for now: remove "hidden" to show Instagram and LinkedIn again -->
+        <a href="https://www.instagram.com/yv11.m/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-walk"><canvas class="croquis" data-poses="walk -stride walk" aria-hidden="true"></canvas></div>
+
+</main>
+
+<script>
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function setup(canvas, maxDpr = 2) {   // animated canvases pass a lower cap: fewer pixels to repaint every frame
+  const dpr = Math.min(devicePixelRatio || 1, maxDpr);
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  return { ctx, w, h };
+}
+function rng(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+
+/* ---------- hero: grey sea with rolling foam ---------- */
+(() => {
+  const c = document.getElementById('wave'); if (!c) return;
+  let S, C, t0 = performance.now();
+  const resize = () => {
+    S = setup(c, 1.5);
+    C = { sheet: css('--sheet'), spray: css('--spray'), sea: css('--wave-light'), deep: css('--wave-mid'), ink: css('--wave-deep') };   // read once, not every frame
+    draw(reduce ? 4 : (performance.now() - t0) / 1000); };
+
+  function drawFish(ctx, x, y, s, ang, dir, sheet, spray, sea, alpha) {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.rotate(ang); ctx.scale(dir, 1);
+    const g = ctx.createLinearGradient(0, -s * .45, 0, s * .45);
+    g.addColorStop(0, sheet); g.addColorStop(.6, sheet); g.addColorStop(1, spray);
+    ctx.fillStyle = g; ctx.strokeStyle = sea; ctx.lineWidth = .8;
+    // body
+    ctx.beginPath(); ctx.moveTo(s * 1.25, 0);
+    ctx.bezierCurveTo(s * .9, -s * .5, -s * .5, -s * .45, -s * 1, 0);
+    ctx.bezierCurveTo(-s * .5, s * .42, s * .9, s * .45, s * 1.25, 0);
+    ctx.fill(); ctx.stroke();
+    // tail
+    ctx.beginPath(); ctx.moveTo(-s * .9, 0);
+    ctx.quadraticCurveTo(-s * 1.35, -s * .15, -s * 1.7, -s * .55);
+    ctx.quadraticCurveTo(-s * 1.45, 0, -s * 1.7, s * .55);
+    ctx.quadraticCurveTo(-s * 1.35, s * .15, -s * .9, 0);
+    ctx.fill(); ctx.stroke();
+    // fins and eye
+    ctx.beginPath(); ctx.moveTo(s * .1, -s * .38); ctx.quadraticCurveTo(-s * .2, -s * .75, -s * .45, -s * .36); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(s * .45, s * .12); ctx.quadraticCurveTo(s * .2, s * .45, s * .05, s * .2); ctx.stroke();
+    ctx.fillStyle = sea; ctx.beginPath(); ctx.arc(s * .8, -s * .08, Math.max(.8, s * .07), 0, 6.283); ctx.fill();
+    ctx.restore();
+  }
+
+  // denim texture for the water, loaded once; the waves draw without it until it arrives
+  let denim = null;
+  const tex = new Image();
+  tex.onload = () => { denim = S.ctx.createPattern(tex, 'repeat'); if (reduce) draw(4); };
+  tex.src = 'denim-texture.jpg';
+  const rgba = (hex, a) => {
+    const v = parseInt(hex.replace('#', ''), 16);
+    return `rgba(${v >> 16 & 255},${v >> 8 & 255},${v & 255},${a})`;
+  };
+  function draw(t) {
+    const { ctx, w, h } = S;
+    const { sheet, spray, sea, deep, ink } = C;
+    const sky = ctx.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, sheet); sky.addColorStop(.35, spray); sky.addColorStop(1, deep);
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+
+    const rows = 7;
+    for (let i = 0; i < rows; i++) {
+      const k = i / (rows - 1);                         // 0 = far, 1 = near
+      const base = h * (.3 + k * .62);
+      const amp = 4 + k * k * 34;
+      const len = 120 + k * 260;
+      const sp = .25 + k * .6;
+      const y = x => base
+        + Math.sin(x / len * 6.283 + t * sp + i * 1.7) * amp
+        + Math.sin(x / (len * .43) * 6.283 - t * sp * .7 + i) * amp * .35;
+
+      // white fish leaping from behind this row; the row's water, drawn next, hides the part still underwater
+      for (let s = 0; s < 4; s++) {
+        const L = 2.6 + s * .9, ph = s * 1.7, cyc = Math.floor((t + ph) / L), local = (t + ph) - cyc * L, D = 1.25;
+        const fr = rng(1 + s * 131 + cyc * 7919);
+        if (2 + Math.floor(fr() * (rows - 2)) !== i || local > D) continue;
+        const size = 7 + k * 14, dir = fr() < .5 ? -1 : 1;
+        const x0 = w * (.08 + fr() * .84), dist = size * (5 + fr() * 3), hgt = size * (2.6 + fr() * 1.6);
+        const p = local / D, fx = x0 + dir * dist * p;
+        const surf = y(fx) + size * .9, fy = surf - 4 * hgt * p * (1 - p);
+        const ang = Math.atan2(dir * -4 * hgt * (1 - 2 * p), dist);   // mirrored fish need the mirrored angle
+        const fade = Math.min(1, p / .12) * Math.min(1, (1 - p) / .35);   // fade in as it leaves the water, out as it dives
+        drawFish(ctx, fx, fy, size, ang, dir, sheet, spray, sea, fade * fade * (3 - 2 * fade));
+        if (p < .22 || p > .8) {                          // splash
+          const sx = p < .22 ? x0 : x0 + dir * dist, sy = y(sx), q = p < .22 ? p / .22 : (1 - p) / .2;
+          ctx.fillStyle = sheet;
+          for (let d = 0; d < 9; d++) {
+            const a = Math.PI * (1.1 + d * .1), rr = size * (.6 + q * 1.4) * (.6 + (d % 3) * .25);
+            ctx.globalAlpha = .9 * (1 - q * .5);
+            ctx.beginPath(); ctx.arc(sx + Math.cos(a) * rr, sy + Math.sin(a) * rr * .8, 1 + (d % 3) * .8 * (1 + k), 0, 6.283); ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      // water body
+      ctx.beginPath(); ctx.moveTo(0, h);
+      for (let x = 0; x <= w; x += 6) ctx.lineTo(x, y(x));
+      ctx.lineTo(w, h); ctx.closePath();
+      // the crest starts see-through and thickens below it, so each wave melts into the one behind
+      const g = ctx.createLinearGradient(0, base - amp, 0, h);
+      g.addColorStop(0, rgba(sea, .25)); g.addColorStop(.12, rgba(sea, .85)); g.addColorStop(.5, rgba(deep, .95)); g.addColorStop(1, rgba(ink, 1));
+      ctx.globalAlpha = .8 + k * .2; ctx.fillStyle = g; ctx.fill();
+
+      // worn denim woven into the water: the photo texture, smaller on the far rows for depth
+      if (denim) {
+        ctx.save(); ctx.clip();
+        denim.setTransform(new DOMMatrix().translate(i * 137, i * 59).scale(.3 + k * .45));
+        ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .75;
+        ctx.fillStyle = denim; ctx.fillRect(0, base - amp * 2, w, h);
+        ctx.restore();
+      }
+
+
+      // soft white spray haze along the crest, built from wide faint strokes so it fades out gently
+      ctx.strokeStyle = sheet;
+      for (const [wd, al] of [[22, .06], [12, .09], [5, .14]]) {
+        ctx.globalAlpha = al; ctx.lineWidth = wd * (.3 + k);
+        ctx.beginPath(); for (let x = 0; x <= w; x += 8) x ? ctx.lineTo(x, y(x) + 2) : ctx.moveTo(x, y(x) + 2); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // foam crest: stippled white dots where the wave rises
+      // dots are gathered into three opacity groups and filled in three calls instead of one call per dot
+      ctx.fillStyle = sheet;
+      const r = rng(97 + i * 13), dots = [new Path2D(), new Path2D(), new Path2D()];
+      for (let x = 0; x <= w; x += 2 + (1 - k) * 3) {
+        const yy = y(x), slope = y(x + 4) - yy;
+        const crest = Math.max(0, -slope) * (1 + k * 2);
+        const n = Math.min(8, 1 + crest * 2.2 + k * 2);
+        for (let j = 0; j < n; j++) {
+          const d = r() ** 2 * (6 + k * 26);
+          const rad = (.4 + r() * (1 + k * 2.4)) * (1 - d / (8 + k * 30));
+          if (rad <= .2) continue;
+          const p = dots[Math.min(2, Math.floor(r() * 3))], cx = x + (r() - .5) * 6, cy = yy + d - 2;
+          p.moveTo(cx + rad, cy); p.arc(cx, cy, rad, 0, 6.283);
+        }
+      }
+      dots.forEach((p, q) => { ctx.globalAlpha = [.55, .78, 1][q]; ctx.fill(p); });
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  resize();
+  let tm; addEventListener('resize', () => { clearTimeout(tm); tm = setTimeout(resize, 150); });
+  if (!reduce) {
+    let visible = false, running = false, last = 0;
+    const loop = now => {   // the sea moves slowly, so 30 frames a second is plenty and halves the work
+      if (!visible) { running = false; return; }   // off screen: stop asking for frames entirely
+      if (now - last > 32) { last = now; draw((now - t0) / 1000); }
+      requestAnimationFrame(loop);
+    };
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible && !running) { running = true; requestAnimationFrame(loop); }
+    }).observe(c);
+  }
+})();
+
+/* ---------- translucent jellyfish drifting up behind the page ---------- */
+(() => {
+  const c = document.getElementById('jellies'); if (!c) return;
+  // fade the jellyfish out once 'Write to me' comes into view, and back in when scrolling up
+  const contact = document.getElementById('contact');
+  let awayAt = 0;   // when the fade-out began; drawing stops once it has finished
+  if (contact) new IntersectionObserver(([e]) => { c.classList.toggle('away', e.isIntersecting); awayAt = e.isIntersecting ? performance.now() : 0; }, { rootMargin: '0px 0px -25% 0px' }).observe(contact);
+  let S, C, jellies = [], t0 = performance.now(), last = 0;
+
+  function make(r, w, h, anywhere) {
+    const size = (w < 600 ? 34 : 46) + r() * (w < 600 ? 34 : 60);
+    return {
+      x: r() * w, y: anywhere ? r() * h : h + size * 2 + r() * h * .3,
+      size, speed: 28 + r() * 30, drift: (r() - .5) * 50, phase: r() * 6.283, sway: 30 + r() * 50,
+      tent: 7 + Math.floor(r() * 6), arms: 3 + Math.floor(r() * 2),
+      alpha: .28 + r() * .22,
+    };
+  }
+
+  function build() {
+    S = setup(c, 1);   // soft, see-through shapes look the same at 1x and need far fewer pixels per frame
+    C = { sheet: css('--sheet'), blush: css('--blush'), jelly: css('--jelly'), pearl: css('--pearl') };
+    const r = rng(777), n = S.w < 600 ? 4 : 7;
+    jellies = Array.from({ length: n }, () => make(r, S.w, S.h, true));
+    jellies.rng = r;
+  }
+
+  function jelly(ctx, j, t) {
+    const pulse = Math.sin(t * 2.2 + j.phase);
+    const bw = j.size * (1 + pulse * .07), bh = j.size * .62 * (1 - pulse * .06);
+    const x = j.x + Math.sin(t * .6 + j.phase) * j.sway, y = j.y;
+    ctx.globalAlpha = j.alpha;
+
+    // tentacles: fine threads that trail and flow
+    ctx.strokeStyle = C.jelly; ctx.lineWidth = .7;
+    for (let i = 0; i < j.tent; i++) {
+      const sx = x - bw * .9 + (bw * 1.8) * i / (j.tent - 1);
+      const len = j.size * (2.2 + (i % 3) * .7);
+      ctx.beginPath(); ctx.moveTo(sx, y);
+      for (let k = 1; k <= 24; k++) {
+        const d = k / 24;
+        ctx.lineTo(sx + Math.sin(t * 1.8 - d * 5 + i + j.phase) * d * j.size * .35, y + d * len);
+      }
+      ctx.stroke();
+    }
+    // oral arms: wide ruffled ribbons
+    for (let a = 0; a < j.arms; a++) {
+      const ax = x + (a - (j.arms - 1) / 2) * bw * .28, len = j.size * (1.4 + a * .25);
+      for (let p = 0; p < 3; p++) {
+        ctx.strokeStyle = p === 1 ? C.sheet : C.blush; ctx.lineWidth = j.size * (.12 - p * .03);
+        ctx.beginPath(); ctx.moveTo(ax, y);
+        for (let k = 1; k <= 20; k++) {
+          const d = k / 20;
+          ctx.lineTo(ax + Math.sin(t * 1.5 - d * 4 + a * 2 + j.phase) * d * j.size * .25 + Math.sin(d * 30 + t * 2) * 1.5, y + d * len);
+        }
+        ctx.stroke();
+      }
+    }
+    // bell: translucent dome with a scalloped rim
+    const g = ctx.createRadialGradient(x - bw * .25, y - bh * .7, bw * .05, x, y - bh * .3, bw * 1.1);
+    g.addColorStop(0, C.sheet); g.addColorStop(.45, C.blush); g.addColorStop(1, C.jelly);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(x - bw, y);
+    ctx.bezierCurveTo(x - bw, y - bh * 1.35, x + bw, y - bh * 1.35, x + bw, y);
+    const sc = 9;
+    for (let s = sc; s > 0; s--) {
+      const x1 = x - bw + (2 * bw) * (s - 1) / sc;
+      ctx.quadraticCurveTo(x - bw + (2 * bw) * (s - .5) / sc, y + bh * .16, x1, y);
+    }
+    ctx.closePath(); ctx.fill();
+    // inner glow and speckles
+    ctx.globalAlpha = j.alpha * 1.2; ctx.fillStyle = C.pearl;
+    for (let s = 0; s < 14; s++) {
+      const a = s * 2.4 + j.phase, d = (s % 5) / 5;
+      ctx.beginPath(); ctx.arc(x + Math.cos(a) * bw * .6 * d, y - bh * .55 + Math.sin(a) * bh * .35 * d, .9 + (s % 3) * .5, 0, 6.283); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function frame(now) {
+    const t = (now - t0) / 1000, dt = Math.min(.1, (now - (last || now)) / 1000); last = now;
+    const { ctx, w, h } = S;
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < jellies.length; i++) {
+      const j = jellies[i];
+      const push = .45 + .8 * Math.max(0, Math.sin(t * 2.2 + j.phase));  // surges up as the bell pulses
+      j.y -= j.speed * push * dt;
+      j.x += j.drift * dt;                                                 // and wanders sideways, wrapping round the screen
+      if (j.x < -j.size * 2) j.x = w + j.size * 2; else if (j.x > w + j.size * 2) j.x = -j.size * 2;
+      if (j.y < -j.size * 4) jellies[i] = make(jellies.rng, w, h, false);
+      jelly(ctx, jellies[i], t);
+    }
+  }
+
+  // start once the page has finished loading, so the first paint isn't held up
+  const start = () => {
+    build();
+    if (reduce) { frame(performance.now()); return; }
+    let running = false;
+    const loop = now => {
+      if (awayAt && now - awayAt >= 1000) { last = 0; running = false; return; }   // faded out: stop until scrolled back up
+      frame(now); requestAnimationFrame(loop);
+    };
+    const wake = () => { if (!running) { running = true; requestAnimationFrame(loop); } };
+    wake();
+    if (contact) new IntersectionObserver(([e]) => { if (!e.isIntersecting) wake(); }, { rootMargin: '0px 0px -25% 0px' }).observe(contact);
+  };
+  if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
+  // phones resize the viewport as the address bar slides away: keep the jellyfish where they are unless the width changed
+  let tm, lastW = innerWidth;
+  addEventListener('resize', () => { clearTimeout(tm); tm = setTimeout(() => {
+    if (!S) return;
+    if (innerWidth !== lastW) { lastW = innerWidth; build(); } else S = setup(c, 1);
+    if (reduce) frame(performance.now());
+  }, 150); });
+})();
+
+/* ---------- brush-ink fashion croquis that sketch themselves in as they scroll into view ---------- */
+(() => {
+  // poses in figure units: 0 = top of head, 1 = toe. shift moves the pelvis over the standing leg.
+  const POSES = {
+    contra: { shift: .04, free: .11, arms: ['down', 'down'], hat: 0 },
+    walk:   { shift: -.015, cross: true, arms: ['swing', 'back'], hat: 1 },
+    hips:   { shift: .01, free: .07, arms: ['hip', 'hip'], hat: 1 },
+    stand:  { shift: -.035, free: .085, arms: ['down', 'down'], hat: 2 },
+    hip:    { shift: .04, free: .1, arms: ['down', 'hip'], hat: 0 },
+    stride: { shift: .02, cross: true, arms: ['back', 'swing'], hat: 2 },
+  };
+  const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+
+  // Catmull-Rom through the given points
+  function spline(pts, n = 10) {
+    if (pts.length < 3) return Array.from({ length: n + 1 }, (_, i) => lerp(pts[0], pts[1], i / n));
+    const out = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      for (let k = 0; k < n; k++) {
+        const t = k / n, t2 = t * t, t3 = t2 * t;
+        out.push([0, 1].map(j => .5 * (2 * p1[j] + (-p0[j] + p2[j]) * t + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * t2 + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * t3)));
+      }
+    }
+    out.push(pts[pts.length - 1]);
+    return out;
+  }
+  // offset a chain of joints sideways to get one contour of a limb
+  function contour(chain, widths, side) {
+    return chain.map((p, i) => {
+      const a = chain[Math.max(0, i - 1)], b = chain[Math.min(chain.length - 1, i + 1)];
+      const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1;
+      return [p[0] - dy / l * widths[i] * side, p[1] + dx / l * widths[i] * side];
+    });
+  }
+
+  // build every stroke for one figure as [points, weight]
+  function figure(pose, r) {
+    const s = pose.shift >= 0 ? 1 : -1, lean = Math.abs(pose.shift) / .03;   // lean scales the hip and shoulder tilt
+    const S = [];
+    const add = (pts, wt = 1, n) => S.push([spline(pts, n), wt]);
+    const pc = [pose.shift, .4], sc = [-pose.shift * .4, .165];
+    const sh = { '-1': [sc[0] - .066, sc[1] - s * .014 * lean], '1': [sc[0] + .066, sc[1] + s * .014 * lean] };
+    const hip = { '-1': [pc[0] - .046, .4 + s * .018 * lean], '1': [pc[0] + .046, .4 - s * .018 * lean] };
+    const head = [(-pose.shift) * .3 + (r() - .5) * .01, .05];
+
+    // head: an egg with a sharper chin, left slightly open like a quick brush mark
+    const egg = [];
+    for (let i = 0; i <= 22; i++) {
+      const th = .5 + i / 22 * 5.9, sn = Math.sin(th);
+      egg.push([head[0] + Math.cos(th) * .021 * (1 - .3 * Math.max(0, sn)), head[1] + sn * .036 * (sn > 0 ? 1.08 : 1)]);
+    }
+    add(egg, .8, 3);
+    S.push([[[head[0] + .004, head[1] + .024], [head[0] + .006, head[1] + .029]], 2.2]);   // lips
+    if (pose.hat === 1) { add([[head[0] - .075, head[1] - .002], [head[0], head[1] - .016], [head[0] + .085, head[1] - .03]], .7); add([[head[0] - .02, head[1] - .02], [head[0], head[1] - .05], [head[0] + .025, head[1] - .03]], .7); }
+    if (pose.hat === 2) add([[head[0] - .01, head[1] + .012], [head[0] + .09, head[1] - .045]], .6);
+    // neck, collarbones, shoulders
+    add([[head[0] - .01, .085], [-.012 + sc[0] * .5, .128]], .8);
+    add([[head[0] + .012, .085], [.014 + sc[0] * .5, .126]], .8);
+    for (const d of [-1, 1]) add([[sc[0] + d * .01, .128], [sc[0] + d * .04, .136], sh[d]], 1.1);
+    add([[sc[0] - .006, .148], [sc[0] - .028, .143]], .5); add([[sc[0] + .006, .148], [sc[0] + .028, .144]], .5);
+    // torso: armpit, waist, hip on each side, plus bust and the leotard line
+    for (const d of [-1, 1]) {
+      const pit = [sh[d][0] - d * .014, sh[d][1] + .04], waist = [(sc[0] + pc[0]) / 2 + d * .027, .315];
+      add([pit, [pit[0] - d * .004, .25], waist, hip[d]], d === s ? 1.1 : 1.8);   // the side the hip juts toward gets the heavy line
+      add([[sc[0] + d * .01, .226], [sc[0] + d * .022, .236], [sc[0] + d * .034, .228]], .5);
+    }
+    const crotch = [pc[0] - s * .004, .452];
+    add([[hip[-1][0] + .006, hip[-1][1] + .006], [pc[0] - .025, .43], crotch], .8);
+    add([crotch, [pc[0] + .025, .43], [hip[1][0] - .006, hip[1][1] + .006]], .8);
+
+    // legs: the standing leg plants under the neck; the free leg steps out, or crosses over on the catwalk
+    for (const d of [-1, 1]) {
+      const top = [pc[0] + d * .024, .44], standing = d === s;
+      let ankle, knee;
+      if (standing) { ankle = [s * .012, .9]; knee = [lerp(top, ankle, .5)[0] + s * .005, .665]; }
+      else if (pose.cross) { ankle = [s * .022, .905]; knee = [top[0] + s * .012, .675]; }
+      else { ankle = [pc[0] + d * pose.free, .91]; knee = [lerp(top, ankle, .5)[0] - d * .008, .67]; }
+      const calf = lerp(knee, ankle, .3);
+      const chain = [top, lerp(top, knee, .45), knee, calf, ankle], w = [.03, .027, .015, .019, .008];
+      add(contour(chain, w, -d), standing ? 2.2 : 1.1);   // outer edge (a contour's +1 side is the figure's left)
+      add(contour(chain, w, d).slice(1), 1);                                                  // inner edge
+      add([[knee[0] - .006, knee[1] + .004], [knee[0] + .004, knee[1] + .01]], .5);                           // kneecap tick
+      const toe = [ankle[0] + d * .018 * (standing ? .5 : 1), .99];                                           // pointed heel and foot
+      add([[ankle[0] - .01, ankle[1]], [ankle[0] - .012, .95], toe], 1); add([[ankle[0] + .009, ankle[1]], [ankle[0] + .008, .945], toe], .8);
+    }
+
+    // arms
+    for (const [i, mode] of pose.arms.entries()) {
+      const d = i ? 1 : -1, sp = sh[d];
+      let elbow, wrist;
+      if (mode === 'hip') { elbow = [sp[0] + d * .085, sp[1] + .12]; wrist = [hip[d][0] - d * .005, hip[d][1] - .035]; }
+      else if (mode === 'swing') { elbow = [sp[0] + d * .008 + .012, sp[1] + .13]; wrist = [sp[0] + d * .005 + .04, sp[1] + .255]; }
+      else if (mode === 'back') { elbow = [sp[0] + d * .016 - .006, sp[1] + .135]; wrist = [sp[0] + d * .03 - .025, sp[1] + .265]; }
+      else { elbow = [sp[0] + d * .012, sp[1] + .135]; wrist = [sp[0] + d * .02, sp[1] + .27]; }
+      const chain = [sp, elbow, wrist], w = [.012, .009, .006];
+      add(contour(chain, w, -d), 1.2);
+      add(contour(chain, w, d).slice(1), .8);
+      const dir = [wrist[0] - elbow[0], wrist[1] - elbow[1]], l = Math.hypot(...dir);
+      const tip = mode === 'hip' ? [wrist[0] - d * .03, wrist[1] + .02] : [wrist[0] + dir[0] / l * .05, wrist[1] + dir[1] / l * .05];
+      add([[wrist[0] - .007, wrist[1]], tip, [wrist[0] + .007, wrist[1] + .004]], .9, 4);                   // hand
+    }
+    // jitter every stroke a touch so no two figures are drawn identically
+    return S.map(([pts, wt]) => [pts.map(([x, y]) => [x + (r() - .5) * .002, y + (r() - .5) * .002]), wt * (.8 + r() * .5)]);
+  }
+
+  // a tapered brush stroke: thin at the start, swelling, then flicking off
+  function brush(ctx, pts, width, upto) {
+    const n = Math.max(2, Math.floor(pts.length * upto)); if (n < 2) return;
+    const L = [], R = [];
+    for (let i = 0; i < n; i++) {
+      const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)];
+      const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1, t = i / (pts.length - 1);
+      const w = width * (.25 + .75 * Math.sin(Math.PI * Math.min(1, t * 1.15)) ** .6);
+      L.push([pts[i][0] - dy / l * w, pts[i][1] + dx / l * w]); R.push([pts[i][0] + dy / l * w, pts[i][1] - dx / l * w]);
+    }
+    ctx.beginPath(); L.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+    for (let i = R.length - 1; i >= 0; i--) ctx.lineTo(R[i][0], R[i][1]);
+    ctx.closePath(); ctx.fill();
+  }
+
+  document.querySelectorAll('canvas.croquis').forEach((c, ci) => {
+    const names = c.dataset.poses.split(' ');
+    let figs = [], S, ink, progress = reduce ? 1 : 0, started = reduce;
+    const build = () => {
+      S = setup(c); ink = css('--ink');   // read the colour once, not on every frame
+      const show = S.w < 520 && names.length > 4 ? names.slice(0, 4) : names;
+      const H = S.h * .96, step = S.w / show.length, r = rng(101 + ci * 37);
+      figs = show.map((nm, i) => {
+        const flip = nm.startsWith('-'), pose = POSES[nm.replace('-', '')];
+        return { cx: step * (i + .5), top: S.h * .02, H, flip, strokes: figure(pose, r) };
+      });
+    };
+    const draw = () => {
+      const { ctx, w, h } = S; ctx.clearRect(0, 0, w, h); ctx.fillStyle = ink;
+      figs.forEach((f, fi) => {
+        // figures in a line-up start one after another; strokes within a figure follow in order
+        const local = Math.min(1, Math.max(0, progress * (1 + figs.length * .25) - fi * .25));
+        const per = 1 / f.strokes.length;
+        f.strokes.forEach(([pts, wt], si) => {
+          const upto = Math.min(1, Math.max(0, (local - si * per * .7) / (per * 3)));
+          if (upto <= 0) return;
+          const px = pts.map(([x, y]) => [f.cx + (f.flip ? -x : x) * f.H, f.top + y * f.H]);
+          brush(ctx, px, Math.max(.5, f.H * .003) * wt, upto);
+        });
+      });
+    };
+    build(); draw();
+    if (!reduce) new IntersectionObserver(([e], o) => {
+      if (!e.isIntersecting || started) return;
+      started = true; o.disconnect();
+      const t0 = performance.now(), dur = 1800 + figs.length * 250;
+      const tick = now => { progress = Math.min(1, (now - t0) / dur); draw(); if (progress < 1) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    }, { threshold: .3 }).observe(c);
+    let tm; addEventListener('resize', () => { clearTimeout(tm); tm = setTimeout(() => { build(); draw(); }, 150); });
+  });
+})();
+
+/* ---------- sketchbook page: pencil croquis with ruffled skirts ---------- */
+(() => {
+  const c = document.getElementById('sketchpage'); if (!c || c.closest('[hidden]')) return;   // nothing to draw while the sketchbook is hidden
+  function figure(ctx, cx, top, h, r, color, flare) {
+    ctx.strokeStyle = color;
+    const head = h * .055;
+    ctx.globalAlpha = .6; ctx.lineWidth = .9;
+    ctx.beginPath(); ctx.ellipse(cx, top + head, head * .8, head, 0, 0, 6.283); ctx.stroke();
+    const neck = top + head * 2.2, waist = neck + h * .26, hem = top + h;
+    // bodice
+    for (const s of [-1, 1]) for (let p = 0; p < 2; p++) {
+      ctx.globalAlpha = .3 + r() * .4; ctx.lineWidth = .6 + r() * .8;
+      ctx.beginPath(); ctx.moveTo(cx + s * h * .05, neck);
+      ctx.quadraticCurveTo(cx + s * h * .1, neck + h * .08, cx + s * h * .055, waist);
+      ctx.stroke();
+    }
+    // ruffled skirt: scalloped tiers
+    const tiers = 4 + Math.floor(r() * 3);
+    for (let i = 0; i < tiers; i++) {
+      const ty = waist + (hem - waist) * (i + 1) / tiers;
+      const tw = h * (.07 + flare * (i + 1) / tiers) * (1 + (r() - .5) * .15);
+      const n = 5 + i * 2;
+      ctx.globalAlpha = .3 + r() * .4; ctx.lineWidth = .6 + r() * .7;
+      ctx.beginPath(); ctx.moveTo(cx - tw, ty);
+      for (let j = 0; j < n; j++) {
+        const x0 = cx - tw + (2 * tw) * j / n, x1 = cx - tw + (2 * tw) * (j + 1) / n;
+        ctx.quadraticCurveTo((x0 + x1) / 2, ty + 6 + r() * 6, x1, ty + (r() - .5) * 3);
+      }
+      ctx.stroke();
+      // side lines of tier
+      ctx.globalAlpha = .25;
+      const py = waist + (hem - waist) * i / tiers, pw = h * (.07 + flare * i / tiers);
+      ctx.beginPath(); ctx.moveTo(cx - pw, py); ctx.lineTo(cx - tw, ty); ctx.moveTo(cx + pw, py); ctx.lineTo(cx + tw, ty); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+  const draw = () => {
+    const { ctx, w, h } = setup(c);
+    const r = rng(1234), ink = css('--ink');
+    figure(ctx, w * .22, h * .1, h * .64, r, ink, .2);
+    figure(ctx, w * .52, h * .14, h * .6, r, ink, .14);
+    figure(ctx, w * .8, h * .1, h * .64, r, ink, .25);
+  };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  draw();
+  let tm; addEventListener('resize', () => { clearTimeout(tm); tm = setTimeout(draw, 150); });
+})();
+
+/* ---------- shell cut-outs: remove the white photo background around each shell ---------- */
+(() => {
+  // flood-fill inward from the image edges through near-white pixels, so white inside the shell is kept
+  function cutout(img) {
+    const w = img.naturalWidth, h = img.naturalHeight; if (!w) return;
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d', { willReadFrequently: true }); ctx.drawImage(img, 0, 0);
+    const im = ctx.getImageData(0, 0, w, h), d = im.data, seen = new Uint8Array(w * h), q = new Int32Array(w * h);
+    const bg = p => { const i = p * 4, mn = Math.min(d[i], d[i + 1], d[i + 2]), mx = Math.max(d[i], d[i + 1], d[i + 2]); return mn >= 236 && mx - mn <= 12; };
+    let head = 0, tail = 0;
+    const push = p => { if (!seen[p] && bg(p)) { seen[p] = 1; q[tail++] = p; } };
+    for (let x = 0; x < w; x++) { push(x); push((h - 1) * w + x); }
+    for (let y = 0; y < h; y++) { push(y * w); push(y * w + w - 1); }
+    while (head < tail) {
+      const p = q[head++], x = p % w;
+      d[p * 4 + 3] = 0;
+      if (x > 0) push(p - 1); if (x < w - 1) push(p + 1);
+      if (p >= w) push(p - w); if (p < w * (h - 1)) push(p + w);
+    }
+    // soften the edge: pixels touching the removed background become half see-through
+    for (let p = 0; p < w * h; p++) {
+      if (seen[p]) continue;
+      const x = p % w;
+      if ((x > 0 && seen[p - 1]) || (x < w - 1 && seen[p + 1]) || (p >= w && seen[p - w]) || (p < w * (h - 1) && seen[p + w])) d[p * 4 + 3] = 140;
+    }
+    ctx.putImageData(im, 0, 0);
+    // toBlob encodes the PNG off the main thread, unlike toDataURL, and a blob URL avoids a huge text string
+    img.classList.add('is-cut');
+    try { c.toBlob(b => { if (b) img.src = URL.createObjectURL(b); }, 'image/png'); } catch (e) {}
+  }
+  const idle = window.requestIdleCallback || (fn => setTimeout(fn, 200));
+  document.querySelectorAll('img.cutout').forEach(img => {
+    const run = () => idle(() => { if (!img.classList.contains('is-cut')) cutout(img); });
+    if (img.complete && img.naturalWidth) run(); else img.addEventListener('load', run, { once: true });
+  });
+})();
+
+/* ---------- a loose thread trailing from the needle cursor ---------- */
+(() => {
+  if (reduce || !matchMedia('(pointer: fine)').matches) return;
+  const c = document.createElement('canvas');
+  c.className = 'thread'; c.setAttribute('aria-hidden', 'true');
+  document.body.append(c);
+  let ctx, dpr, color, running = false, still = 0, show = false, onLink = false, last = 0, acc = 0;
+  let mx = 0, my = 0, ax = 0, ay = 0, vx = 0, vy = 0;   // latest mouse, current anchor, mouse velocity
+  let box = null;                                       // area drawn last frame, so only that is cleared
+  const N = 22, SEG = 7, EYE = 12.8, STEP = 1000 / 120;  // the needle's eye sits 12.8px right and down of its tip; physics runs at a fixed 120 steps a second
+  const pts = Array.from({ length: N }, () => ({ x: 0, y: 0, px: 0, py: 0 }));
+  const size = () => {
+    dpr = Math.min(devicePixelRatio || 1, 1.5);
+    c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+    ctx = c.getContext('2d', { desynchronized: true });  // low-latency canvas where supported
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    color = css('--thread-pink'); box = null;
+  };
+  size(); addEventListener('resize', size);
+
+  function step(tx, ty) {
+    pts[0].x = pts[0].px = tx; pts[0].y = pts[0].py = ty;
+    let move = 0;
+    for (let i = 1; i < N; i++) {                     // verlet: keep momentum, add a little gravity, damp
+      const p = pts[i], dx = (p.x - p.px) * .94, dy = (p.y - p.py) * .94 + .16;
+      p.px = p.x; p.py = p.y; p.x += dx; p.y += dy;
+      move = Math.max(move, Math.abs(dx) + Math.abs(dy - .16));
+    }
+    for (let k = 0; k < 5; k++) for (let i = 1; i < N; i++) {   // keep every stitch of thread the same length
+      const a = pts[i - 1], b = pts[i], dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1, f = (d - SEG) / d;
+      if (i === 1) { b.x -= dx * f; b.y -= dy * f; }
+      else { a.x += dx * f * .5; a.y += dy * f * .5; b.x -= dx * f * .5; b.y -= dy * f * .5; }
+    }
+    return move;
+  }
+  function draw() {
+    if (box) ctx.clearRect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
+    box = null;
+    if (!show || onLink) return;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    ctx.strokeStyle = color;
+    ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < N - 1; i++) { const m = pts[i], n = pts[i + 1]; ctx.quadraticCurveTo(m.x, m.y, (m.x + n.x) / 2, (m.y + n.y) / 2); }
+    ctx.lineTo(pts[N - 1].x, pts[N - 1].y); ctx.stroke();
+    for (const p of pts) { if (p.x < x0) x0 = p.x; if (p.y < y0) y0 = p.y; if (p.x > x1) x1 = p.x; if (p.y > y1) y1 = p.y; }
+    box = [x0 - 4, y0 - 4, x1 + 4, y1 + 4];
+  }
+  function loop(now) {
+    acc += Math.min(now - (last || now), 50); last = now;
+    // aim slightly ahead of the mouse so the thread stays attached to the needle the system draws
+    const tx = mx + vx * 12, ty = my + vy * 12;
+    let move = 0, n = 0;
+    const steps = Math.floor(acc / STEP), sx = ax, sy = ay;
+    while (acc >= STEP) {                             // same physics speed on 60Hz and 120Hz screens
+      acc -= STEP; n++;
+      ax = sx + (tx - sx) * n / steps; ay = sy + (ty - sy) * n / steps;   // glide the anchor across the frame, landing exactly on the needle
+      move = Math.max(move, step(ax, ay));
+    }
+    if (Math.abs(mx - ax) + Math.abs(my - ay) > .5) move = 1;   // never settle while the thread is still catching up
+    if (n) draw();
+    vx *= .7; vy *= .7;
+    still = n && move < .04 ? still + 1 : n ? 0 : still;
+    if (still > 60) { running = false; last = 0; acc = 0; return; }   // settled: stop until the mouse moves again
+    requestAnimationFrame(loop);
+  }
+  const wake = () => { still = 0; if (!running) { running = true; requestAnimationFrame(loop); } };
+
+  let lt = 0;
+  addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    const x = e.clientX + EYE, y = e.clientY + EYE, t = e.timeStamp, dt = Math.max(1, t - lt);
+    if (!show) { ax = mx = x; ay = my = y; vx = vy = 0; pts.forEach((p, i) => { p.x = p.px = x; p.y = p.py = y + i * SEG; }); show = true; }
+    else if (t - lt < 80) { vx = vx * .5 + (x - mx) / dt * .5; vy = vy * .5 + (y - my) / dt * .5; }
+    mx = x; my = y; lt = t;
+    wake();
+  }, { passive: true });
+  // track links once per element change, not on every mouse move
+  const LINKS = 'a, button, [role="button"], label, summary';
+  document.addEventListener('pointerover', e => { onLink = !!e.target.closest?.(LINKS); }, { passive: true });
+  document.addEventListener('mouseleave', () => { show = false; draw(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { show = false; draw(); } });
+})();
+
+/* ---------- only animate what's on screen, and load background photos just before they're needed ---------- */
+(() => {
+  const fonts = document.getElementById('webfonts'); if (fonts) fonts.media = 'all';   // in case the inline onload was blocked
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.cut, .sea').forEach(el => el.classList.add('live'));
+    document.querySelectorAll('.pearl-photo, .scale-photo').forEach(el => el.classList.add('loaded'));
+    return;
+  }
+  const live = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('live', e.isIntersecting)));
+  document.querySelectorAll('.cut, .sea').forEach(el => { if (!el.closest('[hidden]')) live.observe(el); });
+  const lazy = new IntersectionObserver((es, o) => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('loaded'); o.unobserve(e.target); }
+  }), { rootMargin: '800px 0px' });
+  document.querySelectorAll('.pearl-photo, .scale-photo').forEach(el => lazy.observe(el));
+})();
+
+/* ---------- copy email ---------- */
+(() => {
+  const btn = document.getElementById('copy-email');
+  const email = document.getElementById('email');
+  const reset = () => setTimeout(() => (btn.textContent = 'Copy'), 1600);
+  const fallback = () => {
+    const range = document.createRange(); range.selectNodeContents(email);
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    btn.textContent = 'Selected'; reset();
+  };
+  btn.addEventListener('click', () => {
+    try { navigator.clipboard.writeText(email.textContent).then(() => { btn.textContent = 'Copied'; reset(); }, fallback); }
+    catch (e) { fallback(); }
+  });
+})();
+
+/* photo album carousel: arrows step one print at a time, the counter and the centred print follow the scroll */
+document.querySelectorAll('.carousel').forEach(car => {
+  const track = car.querySelector('.album'), slides = [...track.querySelectorAll('.snap')];
+  const prev = car.querySelector('.prev'), next = car.querySelector('.next'), now = car.querySelector('.car-now');
+  car.querySelector('.car-total').textContent = slides.length;
+  let cur = -1, seen = false;
+  /* video slides play only while centred and the carousel is on screen */
+  const playVideos = () => slides.forEach((s, j) => {
+    const v = s.querySelector('video');
+    if (!v) return;
+    if (seen && j === cur && !matchMedia('(prefers-reduced-motion: reduce)').matches) { if (v.preload === 'none') v.preload = 'auto'; v.play().catch(() => {}); }
+    else v.pause();
+  });
+  if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { seen = e.isIntersecting; playVideos(); }, { threshold: .4 }).observe(car);
+  const centred = () => {
+    const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
+    let best = 0, d = Infinity;
+    slides.forEach((s, i) => { const r = s.getBoundingClientRect(), dd = Math.abs(r.left + r.width / 2 - mid); if (dd < d) { d = dd; best = i; } });
+    return best;
+  };
+  const update = () => {
+    const i = centred();
+    if (i === cur) return;
+    cur = i;
+    slides.forEach((s, j) => s.classList.toggle('on', j === i));
+    playVideos();
+    now.textContent = i + 1;
+    prev.disabled = i === 0; next.disabled = i === slides.length - 1;
+  };
+  let target = null, settle = 0;   /* where a click is heading, so quick repeated clicks keep stepping on from there */
+  const step = n => {
+    const i = Math.max(0, Math.min(slides.length - 1, (target ?? centred()) + n));
+    target = i; clearTimeout(settle); settle = setTimeout(() => { target = null; }, 700);
+    const s = slides[i];
+    track.scrollTo({ left: s.offsetLeft - (track.clientWidth - s.offsetWidth) / 2 });
+  };
+  prev.addEventListener('click', () => step(-1));
+  next.addEventListener('click', () => step(1));
+  track.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+  });
+  let raf = 0;
+  track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update); }, { passive: true });
+  addEventListener('resize', () => { cur = -1; update(); });
+  update();
+});
+
+/* photo album: click a print to see it large */
+(() => {
+  const view = document.getElementById('album-view');
+  if (!view || !view.showModal) return;
+  const big = view.querySelector('img'), cap = view.querySelector('p');
+  document.querySelectorAll('.snap button.frame').forEach(btn => btn.addEventListener('click', () => {
+    const img = btn.querySelector('img');
+    big.src = img.currentSrc || img.src; big.alt = img.alt;
+    cap.textContent = btn.closest('.snap').querySelector('figcaption')?.textContent || '';
+    view.showModal();
+  }));
+  view.addEventListener('click', e => { if (e.target === view) view.close(); });   /* click outside the photo closes it */
+})();
+
+/* media: turn each Instagram link into an embedded post; Instagram's script loads only once the section is near the screen */
+(() => {
+  /* posts in the Media section, plus any Instagram slide in the photo album carousels */
+  const links = [...document.querySelectorAll('#media .ig-posts a[href*="instagram.com/"]:not([data-no-embed]), .ig-embed a[href*="instagram.com/"]')];
+  if (!links.length) return;
+  const zones = [document.getElementById('media'), ...document.querySelectorAll('.album-group:has(.ig-embed)')].filter(Boolean);
+  links.forEach(a => {
+    const m = a.href.match(/instagram\.com\/(?:[\w.]+\/)?(p|reel|tv)\/([\w-]+)/);
+    if (!m) return;
+    const url = `https://www.instagram.com/${m[1]}/${m[2]}/`;
+    a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    if (!a.textContent.trim()) a.textContent = 'View on Instagram';
+    const q = document.createElement('blockquote');
+    q.className = 'instagram-media';
+    q.dataset.instgrmPermalink = url + '?utm_source=ig_embed';
+    q.dataset.instgrmVersion = '14';
+    q.appendChild(a.cloneNode(true));
+    a.replaceWith(q);
+  });
+  const load = () => {
+    if (window.instgrm) return window.instgrm.Embeds.process();
+    const s = document.createElement('script');
+    s.src = 'https://www.instagram.com/embed.js'; s.async = true;
+    document.body.appendChild(s);
+  };
+  if (!('IntersectionObserver' in window)) return load();
+  const io = new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { o.disconnect(); load(); } }, { rootMargin: '600px 0px' });
+  zones.forEach(z => io.observe(z));
+})();
+</script>
+
+</body></html>
